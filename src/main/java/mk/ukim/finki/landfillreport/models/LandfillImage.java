@@ -1,4 +1,4 @@
-package mk.ukim.finki.landfillreport.model;
+package mk.ukim.finki.landfillreport.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,20 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Location {
+public class LandfillImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private double latitude;
-    private double longitude;
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
-    private List<Report> reports;
 
+    @Column(nullable = false)
+    private String imageUrl;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "report_id", nullable = false)
+    private Report report;
 }
