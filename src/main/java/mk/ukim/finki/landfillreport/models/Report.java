@@ -1,14 +1,13 @@
 package mk.ukim.finki.landfillreport.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Table(name = "report")
+@Data
 @Entity
 @Getter
 @Setter
@@ -25,10 +24,6 @@ public class Report {
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
-
-    public enum Status {
-        PENDING, APPROVED, REJECTED
-    }
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "location_id", nullable = false)

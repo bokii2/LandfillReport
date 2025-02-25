@@ -1,13 +1,12 @@
 package mk.ukim.finki.landfillreport.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
+@Table(name = "location")
+@Data
 @Entity
 @Getter
 @Setter

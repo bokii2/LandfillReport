@@ -1,13 +1,11 @@
 package mk.ukim.finki.landfillreport.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
-
+@Table(name = "userprofile")
+@Data
 @Entity
 @Getter
 @Setter
@@ -31,10 +29,6 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
-
-    public enum Role {
-        USER, ADMIN
-    }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports;
