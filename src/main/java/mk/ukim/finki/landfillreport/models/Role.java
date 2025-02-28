@@ -1,5 +1,5 @@
 package mk.ukim.finki.landfillreport.models;
 
 public enum Role {
-    USER, ADMIN
+    NORMAL_USER, ADMIN
 }

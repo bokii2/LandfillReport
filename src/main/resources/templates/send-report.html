@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Report</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form action="/send-report" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Select Location:</label>
+                <div id="map"></div>
+                <input type="hidden" name="latitude" id="latitude" required>
+                <input type="hidden" name="longitude" id="longitude" required>
+            </div>
+
+<!--            <div class="form-group">
+                <label for="images">Upload Images:</label>
+                <input type="file" name="images" id="images" class="form-control" multiple>
+            </div>-->
+
+            <button type="submit" class="btn btn-primary">Submit Report</button>
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    var marker = L.marker([51.505, -0.09], { draggable: true }).addTo(map);
+
+    document.getElementById('latitude').value = marker.getLatLng().lat;
+    document.getElementById('longitude').value = marker.getLatLng().lng;
+
+    marker.on('dragend', function (event) {
+        var lat = marker.getLatLng().lat;
+        var lng = marker.getLatLng().lng;
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    });
+
+    map.on('click', function (event) {
+        var lat = event.latlng.lat;
+        var lng = event.latlng.lng;
+
+        marker.setLatLng([lat, lng]);
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    });
+
+    document.querySelector("form").addEventListener("submit", function (event) {
+        var lat = document.getElementById("latitude").value;
+        var lng = document.getElementById("longitude").value;
+
+        if (!lat || !lng) {
+            event.preventDefault(); // Stop form submission
+            alert("Please select a location on the map.");
+        }
+    });
+</script>
