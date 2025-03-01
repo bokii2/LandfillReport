@@ -31,9 +31,8 @@ public class Report {
     @JoinColumn(name = "user_id", nullable = true)
     private UserProfile user;
 
-    //@OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ElementCollection
-    private List<String> images = new ArrayList<>();
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LandfillImage> images = new ArrayList<>();
 
     public Report() {
     }
@@ -43,11 +42,11 @@ public class Report {
         this.location = location;
     }
 
-/*    public Report(String description, Location location, List<String> images) {
+    public Report(String description, Location location, List<LandfillImage> images) {
         this.description = description;
         this.location = location;
         this.images = images;
-    }*/
+    }
 
     public void setDescription(String description) {
         this.description = description;
@@ -65,7 +64,7 @@ public class Report {
         this.user = user;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<LandfillImage> images) {
         this.images = images;
     }
 
@@ -93,7 +92,7 @@ public class Report {
         return user;
     }
 
-    public List<String> getImages() {
+    public List<LandfillImage> getImages() {
         return images;
     }
 }

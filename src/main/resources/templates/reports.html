@@ -23,9 +23,14 @@
                 <td><a th:href="@{/report/{id}(id=${report.id})}" th:text="${report.description}"></a></td>
                 <td><span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span></td>
                 <td th:text="${report.status}"></td>
-<!--                <td>
-                    <img th:src="@{${report.images[0].imagePath}}" alt="Report Image" width="100"/>
-                </td>-->
+                <td>
+                    <div th:if="${!report.images.isEmpty()}">
+                        <img th:src="@{/images/{id}(id=${report.images[0].id})}" alt="Image" />
+                    </div>
+                    <div th:if="${report.images.isEmpty()}">
+                        <p>No images available.</p>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

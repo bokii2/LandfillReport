@@ -12,10 +12,10 @@
         <p><strong>Created At:</strong> <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
         <p><strong>Status:</strong> <span th:text="${report.status}"></span></p>
 
-<!--        <h3>Landfill Images</h3>
-        <div th:each="image : ${report.images}">
-            <img th:src="@{${image.imagePath}}" alt="Landfill Image" width="200"/>
-        </div>-->
+        <h3>Landfill Images</h3>
+        <div>
+            <img th:each="image : ${report.images}" th:src="@{'/images/' + ${image.name}}" alt="Landfill Image" width="200">
+        </div>
 
         <form th:action="@{/report/{id}/update-status(id=${report.id})}" method="post">
             <label for="status">Change Status:</label>
