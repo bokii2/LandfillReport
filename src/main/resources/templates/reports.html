@@ -7,33 +7,37 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-<div class="container">
-    <h1 class="mt-5">All Reports</h1>
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Created At</th>
-                <th>Status</th>
-                <th>Image</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="report : ${reports}">
-                <td><a th:href="@{/report/{id}(id=${report.id})}" th:text="${report.description}"></a></td>
-                <td><span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span></td>
-                <td th:text="${report.status}"></td>
-                <td>
-                    <div th:if="${!report.images.isEmpty()}">
-                        <img th:src="@{/images/{id}(id=${report.images[0].id})}" alt="Image" />
-                    </div>
-                    <div th:if="${report.images.isEmpty()}">
-                        <p>No images available.</p>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="container">
+        <h1 class="mt-5">All Reports</h1>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Status</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="report : ${reports}">
+                    <td>
+                        <a th:href="@{/report/{id}(id=${report.id})}" th:text="${report.description}"></a>
+                    </td>
+                    <td>
+                        <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                    </td>
+                    <td th:text="${report.status}"></td>
+                    <td>
+                        <div th:if="${report.image != null}">
+                            <img th:src="@{/image/{id}(id=${report.image.id})}" alt="Landfill Image" style="max-width: 200px;"/>
+                        </div>
+                        <div th:if="${report.image == null}">
+                            <p>No image available.</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

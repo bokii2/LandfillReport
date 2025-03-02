@@ -12,21 +12,26 @@
         <p><strong>Created At:</strong> <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
         <p><strong>Status:</strong> <span th:text="${report.status}"></span></p>
 
-        <h3>Landfill Images</h3>
         <div>
-            <img th:each="image : ${report.images}" th:src="@{'/images/' + ${image.name}}" alt="Landfill Image" width="200">
+            <div th:if="${report.image != null}">
+                <img th:src="@{/image/{id}(id=${report.image.id})}" alt="Landfill Image" style="max-width: 200px;"/>
+            </div>
+            <div th:if="${report.image == null}">
+                <p>No image available.</p>
+            </div>
         </div>
 
-        <form th:action="@{/report/{id}/update-status(id=${report.id})}" method="post">
+        <form th:if="${report.status == T(mk.ukim.finki.landfillreport.models.Status).PENDING}" th:action="@{/report/{id}/update-status(id=${report.id})}" method="post">
             <label for="status">Change Status:</label>
             <select name="status" id="status" class="form-control">
-                <option value="APPROVED" th:selected="${report.status == 'APPROVED'}">Approved</option>
-                <option value="REJECTED" th:selected="${report.status == 'REJECTED'}">Rejected</option>
+                <option value="PENDING" th:selected="${report.status == T(mk.ukim.finki.landfillreport.models.Status).PENDING}">Pending</option>
+                <option value="APPROVED" th:selected="${report.status == T(mk.ukim.finki.landfillreport.models.Status).APPROVED}">Approved</option>
+                <option value="REJECTED" th:selected="${report.status == T(mk.ukim.finki.landfillreport.models.Status).REJECTED}">Rejected</option>
             </select>
             <button type="submit" class="btn btn-primary mt-3">Update Status</button>
         </form>
 
-        <a href="/home" class="btn btn-secondary mt-3">Back to Home</a>
+        <a href="/reports" class="btn btn-secondary mt-3">Back to Reports</a>
     </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package mk.ukim.finki.landfillreport.service;
 
 import mk.ukim.finki.landfillreport.models.LandfillImage;
+import mk.ukim.finki.landfillreport.models.Report;
 import mk.ukim.finki.landfillreport.repository.ImageRepository;
 import mk.ukim.finki.landfillreport.util.ImageUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -22,24 +23,15 @@ public class LandfillImageService {
         this.imageRepository = imageRepository;
     }
 
-    public LandfillImage uploadImage(MultipartFile file) throws IOException {
-        LandfillImage imageData = new LandfillImage(
-                file.getOriginalFilename(),
-                file.getContentType(),
-                ImageUtils.compressImage(file.getBytes())
-        );
-
-        return imageRepository.save(imageData);
+    public void saveImage(LandfillImage image) {
+        imageRepository.save(image);
     }
-
-/*    public byte[] downloadImage(String fileName){
-        Optional<LandfillImage> dbLandfillImage = imageRepository.findByName(fileName);
-        byte[] images = ImageUtils.decompressImage(dbLandfillImage.get().getImageData());
-
-        return images;
-    }*/
 
     public Optional<LandfillImage> getImageById(Long id) {
         return imageRepository.findById(id);
+    }
+
+    public Optional<LandfillImage> getImageByName(String name) {
+        return imageRepository.findByName(name);
     }
 }

@@ -2,12 +2,11 @@ package mk.ukim.finki.landfillreport.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = "report")
+@Getter
+@Setter
 @Data
 @Entity
 public class Report {
@@ -27,12 +26,13 @@ public class Report {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @OneToOne(optional = false)
+    @JoinColumn(name = "image_id", nullable = false)
+    private LandfillImage image;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
     private UserProfile user;
-
-    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LandfillImage> images = new ArrayList<>();
 
     public Report() {
     }
@@ -42,57 +42,9 @@ public class Report {
         this.location = location;
     }
 
-    public Report(String description, Location location, List<LandfillImage> images) {
+    public Report(String description, Location location, LandfillImage image) {
         this.description = description;
         this.location = location;
-        this.images = images;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public void setUser(UserProfile user) {
-        this.user = user;
-    }
-
-    public void setImages(List<LandfillImage> images) {
-        this.images = images;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public UserProfile getUser() {
-        return user;
-    }
-
-    public List<LandfillImage> getImages() {
-        return images;
+        this.image = image;
     }
 }

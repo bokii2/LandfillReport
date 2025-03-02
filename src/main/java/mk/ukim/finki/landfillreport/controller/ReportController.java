@@ -5,35 +5,31 @@ import mk.ukim.finki.landfillreport.models.Location;
 import mk.ukim.finki.landfillreport.models.Report;
 import mk.ukim.finki.landfillreport.models.Status;
 import mk.ukim.finki.landfillreport.service.LandfillImageService;
+import mk.ukim.finki.landfillreport.service.LocationService;
 import mk.ukim.finki.landfillreport.service.ReportService;
+import mk.ukim.finki.landfillreport.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class ReportController {
     private final ReportService reportService;
     private final LandfillImageService imageService;
+    private final LocationService locationService;
 
     @Autowired
-    public ReportController(ReportService reportService, LandfillImageService imageService){
+    public ReportController(ReportService reportService, LandfillImageService imageService, LocationService locationService){
         this.reportService = reportService;
         this.imageService = imageService;
+        this.locationService = locationService;
     }
 
     @GetMapping("/reports")
@@ -60,35 +56,34 @@ public class ReportController {
     public String submitReport(@RequestParam("description") String description,
                                @RequestParam("latitude") Double latitude,
                                @RequestParam("longitude") Double longitude,
-                               @RequestParam("images") MultipartFile[] images) throws IOException {
-        Report report = new Report();
-        report.setDescription(description);
-        report.setLocation(new Location(latitude, longitude));
+                               @RequestParam("image") MultipartFile image) throws IOException {
+        Location newLocation = new Location(latitude, longitude);
+        locationService.saveLocation(newLocation);
 
-        List<LandfillImage> landfillImages = new ArrayList<>();
-        for (MultipartFile image : images) {
-            LandfillImage uploadedImage = imageService.uploadImage(image);
-            uploadedImage.setReport(report);
-            landfillImages.add(uploadedImage);
-        }
-        report.setImages(landfillImages);
+        LandfillImage img = new LandfillImage(image.getOriginalFilename(),
+                image.getContentType(),
+                ImageUtils.compressImage(image.getBytes()));
+        imageService.saveImage(img);
+
+        Report report = new Report();
+        report.setLocation(newLocation);
+        report.setDescription(description);
+        report.setImage(img);
 
         reportService.saveReport(report);
-        return "redirect:/home";
+        return "redirect:/reports";
     }
 
     @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
-        Optional<LandfillImage> imageOptional = imageService.getImageById(id);
-
-        if (imageOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) throws IOException {
+        Optional<LandfillImage> dbImage = imageService.getImageById(id);
+        if (dbImage.isPresent()) {
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.valueOf(dbImage.get().getType()))
+                    .body(ImageUtils.decompressImage(dbImage.get().getImageData()));
         }
-
-        LandfillImage image = imageOptional.get();
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(image.getImageData());
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/report/{id}/update-status")

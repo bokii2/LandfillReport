@@ -1,16 +1,11 @@
 package mk.ukim.finki.landfillreport.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Table(name = "location")
 @Data
 @Entity
-@Getter
-@Setter
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +18,7 @@ public class Location {
     private Double longitude;
 
     @OneToOne(mappedBy = "location", cascade = CascadeType.PERSIST)
-    @JsonIgnore
-    private Report reports;
+    private Report report;
 
     public Location(){
 
@@ -47,8 +41,8 @@ public class Location {
         return longitude;
     }
 
-    public Report getReports() {
-        return reports;
+    public Report getReport() {
+        return report;
     }
 
     public void setId(Long id) {
@@ -63,7 +57,7 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public void setReports(Report reports) {
-        this.reports = reports;
+    public void setReport(Report reports) {
+        this.report = report;
     }
 }
