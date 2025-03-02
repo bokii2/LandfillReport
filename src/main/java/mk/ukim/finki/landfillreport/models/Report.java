@@ -24,10 +24,12 @@ public class Report {
 
     @OneToOne(optional = false)
     @JoinColumn(name = "location_id", nullable = false)
+    @ToString.Exclude
     private Location location;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "image_id", nullable = false)
+    @ToString.Exclude
     private LandfillImage image;
 
     @ManyToOne

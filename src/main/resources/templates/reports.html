@@ -1,43 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Reports</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container">
-        <h1 class="mt-5">All Reports</h1>
-        <table class="table mt-4">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Created At</th>
-                    <th>Status</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="report : ${reports}">
-                    <td>
-                        <a th:href="@{/report/{id}(id=${report.id})}" th:text="${report.description}"></a>
-                    </td>
-                    <td>
-                        <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-                    </td>
-                    <td th:text="${report.status}"></td>
-                    <td>
-                        <div th:if="${report.image != null}">
-                            <img th:src="@{/image/{id}(id=${report.image.id})}" alt="Landfill Image" style="max-width: 200px;"/>
-                        </div>
-                        <div th:if="${report.image == null}">
-                            <p>No image available.</p>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>All Reports</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+              crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+                crossorigin=""></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="mt-5">All Reports</h1>
+            <div id="map" style="height: 350px; width: 500px;"></div>
+            <form th:action="@{/reports}" method="get">
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <div>
+                        <input type="radio" id="all" name="status" value="ALL" th:checked="${param.status == null}" class="form-check-input">
+                        <label for="all" class="form-check-label">All</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="pending" name="status" value="PENDING" th:checked="${param.status == 'PENDING'}" class="form-check-input">
+                        <label for="pending" class="form-check-label">Pending</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="approved" name="status" value="APPROVED" th:checked="${param.status == 'APPROVED'}" class="form-check-input">
+                        <label for="approved" class="form-check-label">Approved</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="report : ${reports}">
+                        <td>
+                            <a th:href="@{/report/{id}(id=${report.id})}" th:text="${report.description}"></a>
+                        </td>
+                        <td>
+                            <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                        </td>
+                        <td th:text="${report.status}"></td>
+                        <td>
+                            <div th:if="${report.image != null}">
+                                <img th:src="@{/image/{id}(id=${report.image.id})}" alt="Landfill Image" style="max-width: 200px;"/>
+                            </div>
+                            <div th:if="${report.image == null}">
+                                <p>No image available.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
 </html>
+<script>
+    var map = L.map('map').setView([0, 0], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    <!-- Iterate over reports in Thymeleaf and generate markers in JavaScript -->
+    [[${reports}]].forEach(function(report, index) {
+        var lat = report.location.latitude;
+        var lng = report.location.longitude;
+
+        L.marker([lat, lng]).addTo(map)
+            .bindPopup('<b>Description:</b> ' + report.description)
+            .openPopup();
+    });
+
+    map.invalidateSize();
+</script>

@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +34,18 @@ public class ReportController {
     }
 
     @GetMapping("/reports")
-    public String viewReports(Model model) {
-        List<Report> reports = reportService.getAllReports();
+    public String viewReports(@RequestParam(required = false) String status, Model model) {
+        List<Report> reports = new ArrayList<>();
+
+        if (status == null || "ALL".equals(status)) {
+            reports = reportService.getAllReports();
+        } else {
+            Status reportStatus = Status.valueOf(status.toUpperCase());
+            reports = reportService.filterByStatus(reportStatus);
+        }
+
         model.addAttribute("reports", reports);
+        model.addAttribute("reportsSize", reports.size());
         return "reports";
     }
 

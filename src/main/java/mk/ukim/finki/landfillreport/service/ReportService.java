@@ -42,4 +42,13 @@ public class ReportService {
         report.setStatus(status);
         reportRepository.save(report);
     }
+
+    public List<Report> filterByStatus(Status status) {
+        if(status.equals(Status.PENDING))
+            return reportRepository.findByStatus(Status.PENDING);
+        else if (status.equals(Status.APPROVED))
+            return reportRepository.findByStatus(Status.APPROVED);
+        else
+            return reportRepository.findAll();
+    }
 }
