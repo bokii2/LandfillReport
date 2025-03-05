@@ -1,13 +1,13 @@
 package mk.ukim.finki.landfillreport.controller;
 
-import mk.ukim.finki.landfillreport.models.LandfillImage;
-import mk.ukim.finki.landfillreport.models.Location;
-import mk.ukim.finki.landfillreport.models.Report;
-import mk.ukim.finki.landfillreport.models.Status;
+import mk.ukim.finki.landfillreport.models.*;
+import mk.ukim.finki.landfillreport.service.CustomUserDetailsService;
 import mk.ukim.finki.landfillreport.service.LandfillImageService;
 import mk.ukim.finki.landfillreport.service.LocationService;
 import mk.ukim.finki.landfillreport.service.ReportService;
 import mk.ukim.finki.landfillreport.util.ImageUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +25,19 @@ public class ReportController {
     private final ReportService reportService;
     private final LandfillImageService imageService;
     private final LocationService locationService;
+    private final CustomUserDetailsService userService;
 
     @Autowired
-    public ReportController(ReportService reportService, LandfillImageService imageService, LocationService locationService){
+    public ReportController(ReportService reportService, LandfillImageService imageService, LocationService locationService, CustomUserDetailsService userService){
         this.reportService = reportService;
         this.imageService = imageService;
         this.locationService = locationService;
+        this.userService = userService;
     }
 
     @GetMapping("/reports")
     public String viewReports(@RequestParam(required = false) String status, Model model) {
-        List<Report> reports = new ArrayList<>();
+        List<Report> reports;
 
         if (status == null || "ALL".equals(status)) {
             reports = reportService.getAllReports();
@@ -80,8 +82,14 @@ public class ReportController {
         report.setDescription(description);
         report.setImage(img);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserProfile user = userService.findUserByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        report.setUser(user);
+
         reportService.saveReport(report);
-        return "redirect:/reports";
+        return "redirect:/home";
     }
 
     @GetMapping("/image/{id}")

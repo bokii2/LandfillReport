@@ -33,7 +33,8 @@ public class Report {
     private LandfillImage image;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
     private UserProfile user;
 
     public Report() {
@@ -48,5 +49,12 @@ public class Report {
         this.description = description;
         this.location = location;
         this.image = image;
+    }
+
+    public Report(String description, Location location, LandfillImage image, UserProfile user) {
+        this.description = description;
+        this.location = location;
+        this.image = image;
+        this.user = user;
     }
 }

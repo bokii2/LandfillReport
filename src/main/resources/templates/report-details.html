@@ -24,6 +24,7 @@
             <div id="map"></div>
 
             <p><strong>Description:</strong> <span th:text="${report.description}"></span></p>
+            <p><strong>Created By:</strong> <span th:text="${report.user.name + ' ' + report.user.surname}"></span></p>
             <p><strong>Created At:</strong> <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
             <p><strong>Status:</strong> <span th:text="${report.status}"></span></p>
 
