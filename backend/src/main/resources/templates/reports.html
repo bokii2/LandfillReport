@@ -49,7 +49,7 @@
                         <td>
                             <a th:href="@{/report/{id}(id=${report.id})}" th:text="${report.description}"></a>
                         </td>
-                        <td th:text="${report.user.name + ' ' + report.user.surname}"></td>
+                        <td th:text="${report.user != null ? report.user.name + ' ' + report.user.surname : 'Unknown'}"></td>
                         <td>
                             <span th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
                         </td>
