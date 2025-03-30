@@ -5,7 +5,7 @@ import { IUserProfile } from "./UserProfile.type";
 export interface IReport {
     id: number;
     description: string;
-    createdAt: string;
+    createdAt?: string;
     status: "PENDING" | "APPROVED" | "REJECTED";
     location: ILocation;
     image: ILandfillImage;

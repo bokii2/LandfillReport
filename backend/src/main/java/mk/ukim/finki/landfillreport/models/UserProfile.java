@@ -1,5 +1,6 @@
 package mk.ukim.finki.landfillreport.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class UserProfile {
     private Role role = Role.NORMAL_USER;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Report> reports = new ArrayList<>();
 
     public UserProfile() {

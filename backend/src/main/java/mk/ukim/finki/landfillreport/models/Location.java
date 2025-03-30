@@ -1,5 +1,6 @@
 package mk.ukim.finki.landfillreport.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Location {
     private Double longitude;
 
     @OneToOne(mappedBy = "location", cascade = CascadeType.PERSIST)
-    @ToString.Exclude
+    @JsonIgnore
     private Report report;
 
     public Location(){

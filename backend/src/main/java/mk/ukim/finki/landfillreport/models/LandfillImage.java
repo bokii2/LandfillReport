@@ -1,5 +1,6 @@
 package mk.ukim.finki.landfillreport.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class LandfillImage {
     private byte[] imageData;
 
     @OneToOne(mappedBy = "image", cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private Report report;
 
     public LandfillImage(String name, String type, byte[] imageData) {

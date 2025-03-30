@@ -7,5 +7,5 @@ export interface IUserProfile {
     username: string;
     email: string;
     role: "NORMAL_USER" | "ADMIN";
-    reports: IReport[];
+    reports?: IReport[];
 }
