@@ -101,6 +101,7 @@ const LoginForm: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(loginRequest),
       });
       
@@ -146,14 +147,12 @@ if (isMounted) {
       isClosable: true,
     });
     
-    // Use setTimeout to ensure localStorage updates are processed
-    setTimeout(() => {
-      if (userData.role === 'ADMIN') {
-        router.push('/reports');
-      } else {
-        router.push('/send-report');
-      }
-    }, 100);
+    const redirectPath = userData.role === 'ADMIN' ? '/reports' : '/send-report';
+      
+      console.log('Redirecting to:', redirectPath);
+      
+      // Use window.location for a hard redirect instead of the router
+      window.location.href = redirectPath;
   }
       
     } catch (error) {
