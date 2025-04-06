@@ -56,10 +56,10 @@ public class ReportApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Report> getReportById(@PathVariable Long id) {
+    public ResponseEntity<ReportDTO> getReportById(@PathVariable Long id) {
         try {
             Report report = reportService.getReportById(id);
-            return ResponseEntity.ok(report);
+            return ResponseEntity.ok(new ReportDTO(report));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

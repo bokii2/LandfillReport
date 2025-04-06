@@ -4,4 +4,5 @@ export const swrKeys = {
     reports: `${apiUrl}/reports`,
     images: `${apiUrl}/image`,
     locations: `${apiUrl}/locations`,
+    login: `${apiUrl}/auth/login`,
 }

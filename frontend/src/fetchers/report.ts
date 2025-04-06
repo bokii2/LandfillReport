@@ -48,7 +48,7 @@ export const api = {
     },
     
     // Update report status
-    updateReportStatus: async (id: number | string, status: 'APPROVED' | 'REJECTED') => {
+    updateReportStatus: async (id: number | string, status: string) => {
       const formData = new FormData();
       formData.append('status', status);
       

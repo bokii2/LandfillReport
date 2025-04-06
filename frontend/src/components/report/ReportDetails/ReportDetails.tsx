@@ -3,28 +3,32 @@
 import { Box, Button, FormControl, FormLabel, Select, Text, Image, Heading } from "@chakra-ui/react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { LatLngExpression } from "leaflet";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { IReport } from "@/typings/Report.type";
 import { swrKeys } from "@/fetchers/swrKeys";
 import { fetcher } from "@/fetchers/fetcher";
 import { useEffect, useState } from "react";
-import { api } from "@/fetchers/report";
 import { useParams } from "next/navigation";
+import { LatLngExpression } from "leaflet";
+import NextLink from 'next/link';
+import { api } from "@/fetchers/report";
 
 export const ReportDetails = () => {
     const params = useParams();
-    const reportId = params.id;
+    const reportId = typeof params.id === 'string' ? params.id : Array.isArray(params.id) ? params.id[0] : null;
     
     const reportUrl = reportId ? `${swrKeys.reports}/${reportId}` : null;
-
     const { data: report, error, isLoading } = useSWR<IReport>(reportUrl, fetcher);
 
     const [status, setStatus] = useState<string>("");
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
 
     useEffect(() => {
         if (report) {
-          setStatus(report.status);
+            setStatus(report.status);
+            if (report.image?.imageData) {
+                setImageSrc(`data:${report.image.type};base64,${report.image.imageData}`);
+            }
         }
     }, [report]);
 
@@ -38,7 +42,20 @@ export const ReportDetails = () => {
     };
 
     const mapCenter: LatLngExpression = [51.505, -0.09];
-    const imageUrl = report.image ? api.getImageUrl(report.image.id) : undefined;
+
+    const handleUpdateStatus = async () => {
+        if (reportId) {
+            try {
+                await api.updateReportStatus(reportId, status as 'APPROVED' | 'REJECTED' | 'PENDING');
+                await mutate(reportUrl);
+                alert("Status updated successfully.");
+            } catch (error) {
+                console.error("Failed to update status:", error);
+                alert("Failed to update status. Please try again.");
+            }
+        }
+    };
+    console.log(report);
 
     return (
     <Box maxW="800px" mx="auto" p={5}>
@@ -49,20 +66,20 @@ export const ReportDetails = () => {
         <MapContainer center={mapCenter} zoom={13} style={{ height: "100%", width: "100%" }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[report.location.latitude, report.location.longitude]}>
-            <Popup>Report Location</Popup>
+                <Popup>Report Location</Popup>
             </Marker>
         </MapContainer>
         </Box>
 
         {/* Report Info */}
         <Text><strong>Description:</strong>{report?.description}</Text>
-        <Text><strong>Created By:</strong>{report?.user.username}</Text>
+        <Text><strong>Created By:</strong>{report.user ? report?.user.username : "some user"}</Text>
         <Text><strong>Created At:</strong>{report?.createdAt}</Text>
         <Text><strong>Status:</strong>{report?.status}</Text>
 
         {/* Image */}
         <Box my={4}>
-            <Image src={imageUrl} alt="Report" maxW="300px" />
+            {imageSrc && <Image src={imageSrc} alt="Report" maxW="300px" />}
         </Box>
 
         {/* Status Dropdown */}
@@ -76,8 +93,8 @@ export const ReportDetails = () => {
         </FormControl>
 
         {/* Buttons */}
-        <Button colorScheme="blue" mr={2}>Update Status</Button>
-        <Button colorScheme="gray">Back to Reports</Button>
+        <Button colorScheme="blue" mr={2} onClick={handleUpdateStatus}>Update Status</Button>
+        <Button colorScheme="gray" as={NextLink} href={`/`} >Back to Reports</Button>
     </Box>
     );
 };

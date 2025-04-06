@@ -18,6 +18,7 @@ public class LandfillImage {
     private String name;
     private String type;
 
+    @JsonIgnore
     @Column(name = "image_data", nullable = false, length = 100000)
     private byte[] imageData;
 

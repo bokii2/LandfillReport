@@ -6,7 +6,7 @@ export interface IReport {
     id: number;
     description: string;
     createdAt?: string;
-    status: "PENDING" | "APPROVED" | "REJECTED";
+    status: string;
     location: ILocation;
     image: ILandfillImage;
     user: IUserProfile;
