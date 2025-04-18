@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Box,
@@ -31,7 +30,6 @@ interface ILoginForm {
 }
 
 const LoginForm: React.FC = () => {
-  const router = useRouter();
   const toast = useToast();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
