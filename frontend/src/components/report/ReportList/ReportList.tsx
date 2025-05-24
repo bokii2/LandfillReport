@@ -3,9 +3,10 @@
 import { fetcher } from "@/fetchers/fetcher";
 import { swrKeys } from "@/fetchers/swrKeys";
 import { IReport } from "@/typings/Report.type";
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import useSWR from "swr";
 import { ReportItem } from "../ReportItem/ReportItem";
+import EnhancedLocationMap from "@/components/map/EnhancedLocationMap";
 
 
 export const ReportList = () => {
@@ -21,6 +22,12 @@ export const ReportList = () => {
 
     return (
         <Flex direction="column" mt={10} width={{ base: '343px', xl: '870px' }}>
+            <Box mb={6}>
+                <Heading as="h2" size="md" mb={3}>Landfill Locations</Heading>
+                <EnhancedLocationMap height={450} showReports={true} />
+            </Box>
+            
+            <Heading as="h2" size="md" mb={3}>Reports</Heading>
             {reports.map((report) => (
                 <ReportItem key={report.id} report={report} />
             ))}

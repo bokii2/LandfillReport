@@ -1,6 +1,5 @@
 import { ILandfillImage } from "./LandfillImage.type";
 import { ILocation } from "./Location.type";
-import { IUserProfile } from "./UserProfile.type";
 
 export interface IReport {
     id: number;
@@ -9,7 +8,7 @@ export interface IReport {
     status: string;
     location: ILocation;
     image: ILandfillImage;
-    user: IUserProfile;
+    createdBy: string;
 }
 
 export interface IReportList {

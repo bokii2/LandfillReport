@@ -3,6 +3,7 @@
 import React from 'react';
 import { Box, Spinner } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
+import { IReport } from '@/typings/Report.type';
 
 // Define the props type for our map component
 export interface MapWrapperProps {
@@ -11,6 +12,7 @@ export interface MapWrapperProps {
   onPositionChange: (lat: number, lng: number) => void;
   selectable?: boolean;
   height?: number;
+  reports?: IReport[];
 }
 
 const DynamicMap = dynamic(

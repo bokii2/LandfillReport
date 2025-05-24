@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import mk.ukim.finki.landfillreport.repository.UserProfileRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -42,6 +43,7 @@ public class SecurityConfig {
                 // API paths security
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/reports").hasAnyRole("NORMAL_USER")
                         .requestMatchers("/api/reports/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         // Web UI paths (if needed)

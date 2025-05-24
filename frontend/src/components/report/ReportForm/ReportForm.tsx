@@ -173,7 +173,7 @@ const ReportForm = () => {
       
       // Redirect to reports list after 2 seconds
       setTimeout(() => {
-        router.push('/home');
+        router.push('/reports');
       }, 2000);
       
     } catch (err) {
@@ -264,12 +264,11 @@ const ReportForm = () => {
               {/* Map */}
               <Box mt={2} borderWidth={1} borderColor="gray.300" borderRadius="md" overflow="hidden">
                 <MapWrapper 
-                  latitude={latitude || 41.9981} // Default to Macedonia/Skopje if not set
-                  longitude={longitude || 21.4254}
-                  onPositionChange={handlePositionChange}
-                  selectable={true}
-                  height={300}
-                />
+                    latitude={latitude || 41.9981} // Default to Macedonia/Skopje if not set
+                    longitude={longitude || 21.4254}
+                    onPositionChange={handlePositionChange}
+                    selectable={true}
+                    height={300}/>
               </Box>
               <Text mt={1} fontSize="sm" color="gray.500">
                 You can click on the map to set the location

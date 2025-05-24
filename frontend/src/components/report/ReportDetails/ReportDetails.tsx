@@ -56,12 +56,12 @@ export const ReportDetails = () => {
         }
     };
     console.log(report);
+    console.log("The user " + report.createdBy);
 
     return (
     <Box maxW="800px" mx="auto" p={5}>
         <Heading size="lg" mb={4}>Report Location</Heading>
         
-        {/* Map */}
         <Box h="400px" mb={4}>
         <MapContainer center={mapCenter} zoom={13} style={{ height: "100%", width: "100%" }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -71,18 +71,15 @@ export const ReportDetails = () => {
         </MapContainer>
         </Box>
 
-        {/* Report Info */}
         <Text><strong>Description:</strong>{report?.description}</Text>
-        <Text><strong>Created By:</strong>{report.user ? report?.user.username : "some user"}</Text>
+        <Text><strong>Created By:</strong>{report?.createdBy}</Text>
         <Text><strong>Created At:</strong>{report?.createdAt}</Text>
         <Text><strong>Status:</strong>{report?.status}</Text>
 
-        {/* Image */}
         <Box my={4}>
             {imageSrc && <Image src={imageSrc} alt="Report" maxW="300px" />}
         </Box>
 
-        {/* Status Dropdown */}
         <FormControl mb={4}>
             <FormLabel>Change Status:</FormLabel>
             <Select value={status} onChange={handleStatusChange}>
@@ -92,9 +89,8 @@ export const ReportDetails = () => {
             </Select>
         </FormControl>
 
-        {/* Buttons */}
         <Button colorScheme="blue" mr={2} onClick={handleUpdateStatus}>Update Status</Button>
-        <Button colorScheme="gray" as={NextLink} href={`/`} >Back to Reports</Button>
+        <Button colorScheme="gray" as={NextLink} href={`/reports`} >Back to Reports</Button>
     </Box>
     );
 };
