@@ -1,4 +1,4 @@
-package mk.ukim.finki.landfillreport.controller;
+package mk.ukim.finki.landfillreport.web;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;

@@ -1,17 +1,20 @@
 // components/ProtectedRoute.tsx
-'use client';
+"use client";
 
-import { useEffect, useState, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { Center, Spinner } from '@chakra-ui/react';
+import { useEffect, useState, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { Center, Spinner } from "@chakra-ui/react";
 
 interface ProtectedRouteProps {
   children: ReactNode;
   adminOnly?: boolean;
 }
 
-const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) => {
+const ProtectedRoute = ({
+  children,
+  adminOnly = false,
+}: ProtectedRouteProps) => {
   const { isAuthenticated, isAdmin, loading } = useAuth();
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,27 +22,27 @@ const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) =>
 
   useEffect(() => {
     setIsMounted(true);
-    
+
     // Add debugging
-    console.log('ProtectedRoute check - Auth status:', {
+    console.log("ProtectedRoute check - Auth status:", {
       loading,
       isAuthenticated,
       isAdmin,
-      adminOnly
+      adminOnly,
     });
-    
+
     if (!loading) {
       if (!isAuthenticated) {
-        console.log('Not authenticated, redirecting to login');
-        router.push('/login');
+        console.log("Not authenticated, redirecting to login");
+        router.push("/login");
       } else if (adminOnly && !isAdmin) {
-        console.log('Not admin, redirecting to unauthorized');
-        router.push('/unauthorized');
+        console.log("Not admin, redirecting to unauthorized");
+        router.push("/unauthorized");
       } else {
-        console.log('Authentication successful, staying on page');
+        console.log("Authentication successful, staying on page");
       }
     }
-    
+
     return () => {
       setIsMounted(false);
     };

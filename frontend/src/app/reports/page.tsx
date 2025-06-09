@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Container, Heading, Text, Spinner, Center } from '@chakra-ui/react';
-import { ReportList } from '@/components/report/ReportList/ReportList';
-import ProtectedRoute from '@/components/auth/ProtectedRoute/ProtectedRoute';
+import { useEffect, useState } from "react";
+import { Container, Heading, Text, Spinner, Center } from "@chakra-ui/react";
+import { ReportList } from "@/components/report/ReportList/ReportList";
+import ProtectedRoute from "@/components/auth/ProtectedRoute/ProtectedRoute";
 
 export default function Reports() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -12,35 +12,35 @@ export default function Reports() {
   const [error, setError] = useState(null);
 
   // app/reports/page.tsx
-useEffect(() => {
+  useEffect(() => {
     const getReports = async () => {
-      const token = localStorage.getItem('authToken');
-      console.log('Reports page - token exists:', !!token);
-      
+      const token = localStorage.getItem("authToken");
+      console.log("Reports page - token exists:", !!token);
+
       try {
-        const response = await fetch('http://localhost:8080/api/reports', {
+        const response = await fetch("http://localhost:8080/api/reports", {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
-        
-        console.log('Reports API response status:', response.status);
-        
+
+        console.log("Reports API response status:", response.status);
+
         if (!response.ok) {
-          throw new Error('Failed to fetch reports');
+          throw new Error("Failed to fetch reports");
         }
-        
+
         const data = await response.json();
         setReports(data);
       } catch (err) {
-        console.error('Error fetching reports:', err);
+        console.error("Error fetching reports:", err);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    
+
     getReports();
   }, []);
 
@@ -63,10 +63,7 @@ useEffect(() => {
 
   return (
     <ProtectedRoute adminOnly>
-      <Container maxW="container.md" py={10}>
-        <Heading mb={6}>Reports</Heading>
-           <ReportList/>
-      </Container>
+      <ReportList />
     </ProtectedRoute>
   );
 }

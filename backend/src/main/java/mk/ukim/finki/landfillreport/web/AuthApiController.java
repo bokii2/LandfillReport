@@ -1,18 +1,12 @@
-package mk.ukim.finki.landfillreport.controller;
+package mk.ukim.finki.landfillreport.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import mk.ukim.finki.landfillreport.models.LoginRequest;
 import mk.ukim.finki.landfillreport.models.Role;
 import mk.ukim.finki.landfillreport.models.UserProfile;
 import mk.ukim.finki.landfillreport.repository.UserProfileRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;

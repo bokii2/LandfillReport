@@ -1,7 +1,5 @@
-import { Text } from "@chakra-ui/react";
+import LandfillHomepage from "@/components/home/Home";
 
 export default function Home() {
-    return (
-        <Text>HIIIIIIIIIIII</Text>
-    )
+  return <LandfillHomepage />;
 }

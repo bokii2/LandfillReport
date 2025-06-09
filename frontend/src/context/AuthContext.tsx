@@ -1,9 +1,15 @@
 // context/AuthContext.tsx
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { IUserProfile } from '@/typings/UserProfile.type';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+import { IUserProfile } from "@/typings/UserProfile.type";
 
 interface AuthContextType {
   user: IUserProfile | null;
@@ -38,25 +44,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Use separate useEffect for client-side code to prevent hydration mismatch
   useEffect(() => {
     setIsMounted(true);
-    
+
     // Only run this code on the client
     const loadUserFromStorage = () => {
-      const storedUser = localStorage.getItem('currentUser');
+      const storedUser = localStorage.getItem("currentUser");
       if (storedUser) {
         try {
           setUser(JSON.parse(storedUser));
         } catch (e) {
-          console.error('Error parsing stored user data:', e);
-          localStorage.removeItem('currentUser');
+          console.error("Error parsing stored user data:", e);
+          localStorage.removeItem("currentUser");
         }
       }
-      
+
       // Start auth check after checking local storage
       checkAuthStatus();
     };
-    
+
     loadUserFromStorage();
-    
+
     return () => {
       setIsMounted(false);
     };
@@ -65,37 +71,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const checkAuthStatus = async () => {
     try {
       // Check for authentication token
-      const token = localStorage.getItem('authToken');
-      console.log('Auth check - token exists:', !!token);
-      
+      const token = localStorage.getItem("authToken");
+      console.log("Auth check - token exists:", !!token);
+
       if (!token) {
         setUser(null);
         setLoading(false);
         return;
       }
-      
+
       // Make request with token
-      const response = await fetch('http://localhost:8080/api/auth/me', {
+      const response = await fetch("http://localhost:8080/api/auth/me", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
       });
-      
-      console.log('Auth check response status:', response.status);
-      
+
+      console.log("Auth check response status:", response.status);
+
       if (response.ok) {
         const userData = await response.json();
-        console.log('Auth check response data:', userData);
+        console.log("Auth check response data:", userData);
         setUser(userData);
       } else {
-        console.log('Auth check failed, clearing user');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('currentUser');
+        console.log("Auth check failed, clearing user");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
         setUser(null);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error("Auth check failed:", error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -105,31 +111,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = (userData: IUserProfile) => {
     setUser(userData);
     if (isMounted) {
-      localStorage.setItem('currentUser', JSON.stringify(userData));
+      localStorage.setItem("currentUser", JSON.stringify(userData));
     }
   };
 
   const logout = async () => {
     try {
-      await fetch('http://localhost:8080/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
+      await fetch("http://localhost:8080/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
       });
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       if (isMounted) {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem("currentUser");
       }
       setUser(null);
       if (isMounted) {
-        router.push('/login');
+        router.push("/login");
       }
     }
   };
 
   const isAuthenticated = !!user;
-  const isAdmin = user?.role === 'ADMIN';
+  const isAdmin = user?.role === "ADMIN";
 
   return (
     <AuthContext.Provider

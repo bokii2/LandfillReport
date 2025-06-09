@@ -1,4 +1,4 @@
-package mk.ukim.finki.landfillreport.controller;
+package mk.ukim.finki.landfillreport.web;
 
 import mk.ukim.finki.landfillreport.models.*;
 import mk.ukim.finki.landfillreport.service.CustomUserDetailsService;

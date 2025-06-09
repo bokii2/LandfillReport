@@ -145,12 +145,7 @@ if (isMounted) {
       isClosable: true,
     });
     
-    const redirectPath = userData.role === 'ADMIN' ? '/reports' : '/send-report';
-      
-      console.log('Redirecting to:', redirectPath);
-      
-      // Use window.location for a hard redirect instead of the router
-      window.location.href = redirectPath;
+      window.location.href = '/home';
   }
       
     } catch (error) {

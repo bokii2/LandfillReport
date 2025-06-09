@@ -1,4 +1,4 @@
-package mk.ukim.finki.landfillreport.controller;
+package mk.ukim.finki.landfillreport.web;
 
 import mk.ukim.finki.landfillreport.models.Role;
 import mk.ukim.finki.landfillreport.models.UserProfile;
