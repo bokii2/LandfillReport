@@ -1,20 +1,4 @@
-// import { EmailIcon } from "@chakra-ui/icons";
-// import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-
-// interface IEmailInputProps {
-//   isSub: boolean;
-// }
-
-// export const EmailInput = ({ isSub }: IEmailInputProps) => {
-//   return (
-//     <InputGroup size="md">
-//       <InputLeftElement>
-//         <EmailIcon />
-//       </InputLeftElement>
-//       <Input pr="4.5rem" type="email" placeholder="Email" disabled={isSub} />
-//     </InputGroup>
-//   );
-// };
+import React from "react";
 import {
   Input,
   InputGroup,
@@ -22,9 +6,9 @@ import {
   useColorModeValue,
   Icon,
 } from "@chakra-ui/react";
-import { FiMail } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 
-interface IEmailInputProps {
+interface IUsernameInputProps {
   isSub: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -35,17 +19,16 @@ interface IEmailInputProps {
   size?: "sm" | "md" | "lg";
 }
 
-export const EmailInput = ({
+export const UsernameInput = ({
   isSub,
   value,
   onChange,
-  placeholder = "Enter your email",
-  name = "email",
-  id = "email",
+  placeholder = "Enter your username",
+  name = "username",
+  id = "username",
   isInvalid = false,
   size = "lg",
-}: IEmailInputProps) => {
-  // Color mode values
+}: IUsernameInputProps) => {
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
@@ -61,7 +44,7 @@ export const EmailInput = ({
         w={size === "lg" ? "12" : size === "md" ? "10" : "8"}
       >
         <Icon
-          as={FiMail}
+          as={FiUser}
           color={isSub ? iconColor : iconColor}
           boxSize={size === "lg" ? 5 : size === "md" ? 4 : 3}
         />
@@ -69,7 +52,7 @@ export const EmailInput = ({
       <Input
         id={id}
         name={name}
-        type="username"
+        type="text"
         value={value}
         onChange={onChange}
         placeholder={placeholder}

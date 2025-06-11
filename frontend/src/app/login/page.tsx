@@ -1,10 +1,11 @@
-import { Container } from "@chakra-ui/react";
+import { AuthRedirect } from "@/components/shared/AuthRedirect/AuthRedirect";
 import LoginClientWrapper from "./login-client";
 
 export default function Login() {
   return (
-    <Container maxW="container.md" py={10}>
+    <>
+      <AuthRedirect to="/home" condition="loggedIn" />
       <LoginClientWrapper />
-    </Container>
+    </>
   );
 }

@@ -50,7 +50,6 @@ import { IUserProfile } from "@/typings/UserProfile.type";
 import useSWR, { mutate } from "swr";
 import { swrKeys } from "@/fetchers/swrKeys";
 import { fetcher } from "@/fetchers/fetcher";
-import { useRouter } from "next/navigation";
 
 export default function LandfillHomepage() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -61,7 +60,7 @@ export default function LandfillHomepage() {
   const textColor = useColorModeValue("gray.600", "gray.300");
   const headingColor = useColorModeValue("gray.800", "white");
 
-  const { data: user } = useSWR<IUserProfile>(swrKeys.userProfile, fetcher);
+  const { data: user } = useSWR<IUserProfile>(swrKeys.me, fetcher);
   const isAdmin = user?.role === "ADMIN";
 
   const navItems = [
@@ -138,16 +137,12 @@ export default function LandfillHomepage() {
   const navLinkHoverBg = useColorModeValue("gray.100", "gray.700");
   const drawerItemHoverBg = useColorModeValue("gray.100", "gray.700");
 
-  const router = useRouter();
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    mutate(
-      swrKeys.userProfile,
-      null
-      // , { revalidate: false }
-    );
-    router.push("/home");
+    localStorage.removeItem("currentUser");
+
+    mutate(swrKeys.me, null, { revalidate: false });
+    window.location.href = "/";
   };
 
   const NavBar = () => (
