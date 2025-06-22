@@ -20,9 +20,9 @@ public class Location {
     @Column(nullable = false)
     private Double longitude;
 
-    @OneToOne(mappedBy = "location", cascade = CascadeType.PERSIST)
-    @JsonIgnore
-    private Report report;
+//    @OneToOne(mappedBy = "location", cascade = CascadeType.PERSIST)
+//    @JsonIgnore
+//    private Report report;
 
     public Location(){
 

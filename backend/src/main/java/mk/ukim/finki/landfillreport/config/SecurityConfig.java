@@ -43,6 +43,7 @@ public class SecurityConfig {
                 // API paths security
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/api/predictions/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/reports").hasAnyRole("NORMAL_USER")
                         .requestMatchers("/api/reports/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
