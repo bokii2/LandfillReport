@@ -10,10 +10,10 @@ import { IReport } from "@/typings/Report.type";
 import NextLink from "next/link";
 
 // Reuse your existing icon creation function
-const createMarkerIcon = () => {
+const createMarkerIcon = (color: string) => {
   return new L.Icon({
-    iconUrl: "/images/marker-icon.png",
-    iconRetinaUrl: "/images/marker-icon-2x.png",
+    iconUrl: `/images/marker-icon-${color}.png`,
+    // iconRetinaUrl: `/images/marker-icon-${color}-2x.png`,
     shadowUrl: "/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -22,8 +22,10 @@ const createMarkerIcon = () => {
   });
 };
 
+type ColoredLocation = ILocation & { source?: "report" | "prediction" };
+
 export interface EnhancedLocationsDisplayMapProps {
-  locations: ILocation | ILocation[];
+  locations: ColoredLocation[];
   reports?: IReport[];
   height?: number;
 }
@@ -31,8 +33,10 @@ export interface EnhancedLocationsDisplayMapProps {
 const EnhancedLocationsDisplayMap: React.FC<
   EnhancedLocationsDisplayMapProps
 > = ({ locations, reports = [], height = 400 }) => {
-  const [markerIcon, setMarkerIcon] = useState<L.Icon | null>(null);
   const [center, setCenter] = useState<[number, number]>([41.9981, 21.4254]); // Default center (Skopje)
+
+  const [reportIcon, setReportIcon] = useState<L.Icon | null>(null);
+  const [predictionIcon, setPredictionIcon] = useState<L.Icon | null>(null);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const normalizedLocations = Array.isArray(locations)
@@ -40,9 +44,12 @@ const EnhancedLocationsDisplayMap: React.FC<
     : locations
     ? [locations]
     : [];
+  
+  console.log(locations)
 
   useEffect(() => {
-    setMarkerIcon(createMarkerIcon());
+    setReportIcon(createMarkerIcon("blue"));
+    setPredictionIcon(createMarkerIcon("red"));
 
     // If locations are loaded and there's at least one, center the map on the first location
     if (normalizedLocations.length > 0) {
@@ -76,10 +83,6 @@ const EnhancedLocationsDisplayMap: React.FC<
     );
   };
 
-  if (!markerIcon) {
-    return null; // Wait for the icon to be ready
-  }
-
   return (
     <Box height={`${height}px`} width="100%">
       <MapContainer
@@ -95,11 +98,14 @@ const EnhancedLocationsDisplayMap: React.FC<
         {normalizedLocations.map((location) => {
           const report = getReportForLocation(location.id);
 
+          const icon = location.source === "report" ? reportIcon : predictionIcon;
+          if (!icon) return null;
+
           return (
             <Marker
               key={location.id}
               position={[location.latitude, location.longitude]}
-              icon={markerIcon}
+              icon={icon}
             >
               <Popup maxWidth={300}>
                 <Box p={1}>
@@ -142,7 +148,7 @@ const EnhancedLocationsDisplayMap: React.FC<
                         Coordinates: {location.latitude}, {location.longitude}
                       </Text>
                       <Text fontSize="sm" color="gray.600">
-                        No report associated with this location
+                        Prediction-based location
                       </Text>
                     </>
                   )}
