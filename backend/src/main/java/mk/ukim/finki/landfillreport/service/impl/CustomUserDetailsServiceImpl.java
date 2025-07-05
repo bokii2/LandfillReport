@@ -1,8 +1,9 @@
-package mk.ukim.finki.landfillreport.service;
+package mk.ukim.finki.landfillreport.service.impl;
 
 import mk.ukim.finki.landfillreport.models.CustomUserDetails;
 import mk.ukim.finki.landfillreport.models.UserProfile;
 import mk.ukim.finki.landfillreport.repository.UserProfileRepository;
+import mk.ukim.finki.landfillreport.service.CustomUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,10 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomUserDetailsService {
     private final UserProfileRepository userProfileRepository;
 
-    public CustomUserDetailsService(UserProfileRepository userProfileRepository) {
+    public CustomUserDetailsServiceImpl(UserProfileRepository userProfileRepository) {
         this.userProfileRepository = userProfileRepository;
     }
 

@@ -1,18 +1,19 @@
-package mk.ukim.finki.landfillreport.service;
+package mk.ukim.finki.landfillreport.service.impl;
 
 import mk.ukim.finki.landfillreport.models.Location;
 import mk.ukim.finki.landfillreport.repository.LocationRepository;
+import mk.ukim.finki.landfillreport.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class LocationService {
+public class LocationServiceImpl implements LocationService {
     private LocationRepository locationRepository;
 
     @Autowired
-    public LocationService(LocationRepository locationRepository) {
+    public LocationServiceImpl(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 

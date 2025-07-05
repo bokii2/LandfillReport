@@ -40,18 +40,15 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                // API paths security
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/reports").hasAnyRole("NORMAL_USER")
                         .requestMatchers("/api/reports/**").hasRole("ADMIN")
                         .requestMatchers("/api/predictions/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
-                        // Web UI paths (if needed)
                         .requestMatchers("/", "/login", "/register").permitAll()
                         .anyRequest().authenticated()
                 )
-                // Disable redirect to login page for API requests
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             if (request.getRequestURI().startsWith("/api/")) {
@@ -63,11 +60,9 @@ public class SecurityConfig {
                             }
                         })
                 )
-                // Use stateless session management for API
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // Add JWT token filter
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -100,8 +95,8 @@ public class SecurityConfig {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setSameSite("Lax"); // Or "None" with secure flag for cross-domain
-        serializer.setUseSecureCookie(false); // Set to true in production with HTTPS
+        serializer.setSameSite("Lax");
+        serializer.setUseSecureCookie(false);
         return serializer;
     }
 

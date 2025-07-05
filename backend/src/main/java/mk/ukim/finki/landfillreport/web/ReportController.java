@@ -1,10 +1,10 @@
 package mk.ukim.finki.landfillreport.web;
 
 import mk.ukim.finki.landfillreport.models.*;
-import mk.ukim.finki.landfillreport.service.CustomUserDetailsService;
-import mk.ukim.finki.landfillreport.service.LandfillImageService;
-import mk.ukim.finki.landfillreport.service.LocationService;
-import mk.ukim.finki.landfillreport.service.ReportService;
+import mk.ukim.finki.landfillreport.service.impl.CustomUserDetailsServiceImpl;
+import mk.ukim.finki.landfillreport.service.impl.LandfillImageServiceImpl;
+import mk.ukim.finki.landfillreport.service.impl.LocationServiceImpl;
+import mk.ukim.finki.landfillreport.service.impl.ReportServiceImpl;
 import mk.ukim.finki.landfillreport.util.ImageUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,16 +21,16 @@ import java.util.Optional;
 
 @Controller
 public class ReportController {
-    private final ReportService reportService;
-    private final LandfillImageService imageService;
-    private final LocationService locationService;
-    private final CustomUserDetailsService userService;
+    private final ReportServiceImpl reportServiceImpl;
+    private final LandfillImageServiceImpl imageService;
+    private final LocationServiceImpl locationServiceImpl;
+    private final CustomUserDetailsServiceImpl userService;
 
     @Autowired
-    public ReportController(ReportService reportService, LandfillImageService imageService, LocationService locationService, CustomUserDetailsService userService){
-        this.reportService = reportService;
+    public ReportController(ReportServiceImpl reportServiceImpl, LandfillImageServiceImpl imageService, LocationServiceImpl locationServiceImpl, CustomUserDetailsServiceImpl userService){
+        this.reportServiceImpl = reportServiceImpl;
         this.imageService = imageService;
-        this.locationService = locationService;
+        this.locationServiceImpl = locationServiceImpl;
         this.userService = userService;
     }
 
@@ -39,10 +39,10 @@ public class ReportController {
         List<Report> reports;
 
         if (status == null || "ALL".equals(status)) {
-            reports = reportService.getAllReports();
+            reports = reportServiceImpl.getAllReports();
         } else {
             Status reportStatus = Status.valueOf(status.toUpperCase());
-            reports = reportService.filterByStatus(reportStatus);
+            reports = reportServiceImpl.filterByStatus(reportStatus);
         }
 
         model.addAttribute("reports", reports);
@@ -53,7 +53,7 @@ public class ReportController {
     @GetMapping("/report/{id}")
     public String viewReportDetails(@PathVariable String id, Model model) {
         Long reportId = Long.parseLong(id);
-        Report report = reportService.getReportById(reportId);
+        Report report = reportServiceImpl.getReportById(reportId);
         model.addAttribute("report", report);
         return "report-details";
     }
@@ -69,7 +69,7 @@ public class ReportController {
                                @RequestParam("longitude") Double longitude,
                                @RequestParam("image") MultipartFile image) throws IOException {
         Location newLocation = new Location(latitude, longitude);
-        locationService.saveLocation(newLocation);
+        locationServiceImpl.saveLocation(newLocation);
 
         LandfillImage img = new LandfillImage(image.getOriginalFilename(),
                 image.getContentType(),
@@ -87,7 +87,7 @@ public class ReportController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         report.setUser(user);
 
-        reportService.saveReport(report);
+        reportServiceImpl.saveReport(report);
         return "redirect:/home";
     }
 
@@ -111,7 +111,7 @@ public class ReportController {
             s = Status.APPROVED;
         else
             s = Status.REJECTED;
-        reportService.updateReportStatus(reportId, s);
+        reportServiceImpl.updateReportStatus(reportId, s);
         return "redirect:/reports";
     }
 }

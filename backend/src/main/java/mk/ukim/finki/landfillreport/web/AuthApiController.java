@@ -25,26 +25,21 @@ public class AuthApiController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserProfile userProfile) {
-        // Check if username already exists
         if (userProfileRepository.findByUsername(userProfile.getUsername()).isPresent()) {
             Map<String, String> error = Collections.singletonMap("message", "Username already exists!");
             return ResponseEntity.badRequest().body(error);
         }
 
-        // Check if email already exists
         if (userProfileRepository.findByEmail(userProfile.getEmail()).isPresent()) {
             Map<String, String> error = Collections.singletonMap("message", "Email already exists!");
             return ResponseEntity.badRequest().body(error);
         }
 
-        // Encode password and set role
         userProfile.setPassword(passwordEncoder.encode(userProfile.getPassword()));
         userProfile.setRole(Role.NORMAL_USER);
 
-        // Save user
         UserProfile savedProfile = userProfileRepository.save(userProfile);
 
-        // Return success response (without exposing password)
         savedProfile.setPassword(null);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -53,20 +48,15 @@ public class AuthApiController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // Get user by username
         Optional<UserProfile> userOpt = userProfileRepository.findByUsername(loginRequest.getUsername());
 
-        // Check if user exists and password matches
         if (userOpt.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {
             UserProfile user = userOpt.get();
 
-            // Generate token
             String token = generateToken(user);
 
-            // Don't return the password in the response
             user.setPassword(null);
 
-            // Return user data with token
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
             response.put("token", token);
@@ -83,7 +73,6 @@ public class AuthApiController {
     }
 
     private String generateToken(UserProfile user) {
-        // Simple token generation (use JWT in production)
         String data = user.getUsername() + ":" + user.getRole().name() + ":" + System.currentTimeMillis();
         return Base64.getEncoder().encodeToString(data.getBytes());
     }

@@ -1,25 +1,23 @@
-package mk.ukim.finki.landfillreport.service;
+package mk.ukim.finki.landfillreport.service.impl;
 
-import jakarta.transaction.Transactional;
-import mk.ukim.finki.landfillreport.models.LandfillImage;
-import mk.ukim.finki.landfillreport.models.Location;
 import mk.ukim.finki.landfillreport.models.Report;
 import mk.ukim.finki.landfillreport.models.Status;
 import mk.ukim.finki.landfillreport.repository.ImageRepository;
 import mk.ukim.finki.landfillreport.repository.LocationRepository;
 import mk.ukim.finki.landfillreport.repository.ReportRepository;
+import mk.ukim.finki.landfillreport.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ReportService {
+public class ReportServiceImpl implements ReportService {
     private ReportRepository reportRepository;
     private LocationRepository locationRepository;
     private ImageRepository imageRepository;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository, LocationRepository locationRepository, ImageRepository imageRepository) {
+    public ReportServiceImpl(ReportRepository reportRepository, LocationRepository locationRepository, ImageRepository imageRepository) {
         this.reportRepository = reportRepository;
         this.locationRepository = locationRepository;
         this.imageRepository = imageRepository;

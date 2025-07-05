@@ -1,25 +1,19 @@
-package mk.ukim.finki.landfillreport.service;
+package mk.ukim.finki.landfillreport.service.impl;
 
 import mk.ukim.finki.landfillreport.models.LandfillImage;
-import mk.ukim.finki.landfillreport.models.Report;
 import mk.ukim.finki.landfillreport.repository.ImageRepository;
-import mk.ukim.finki.landfillreport.util.ImageUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
+import mk.ukim.finki.landfillreport.service.LandfillImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
-public class LandfillImageService {
+public class LandfillImageServiceImpl implements LandfillImageService {
     private ImageRepository imageRepository;
 
     @Autowired
-    public LandfillImageService(ImageRepository imageRepository) {
+    public LandfillImageServiceImpl(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
 

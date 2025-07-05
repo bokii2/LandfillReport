@@ -1,10 +1,10 @@
 package mk.ukim.finki.landfillreport.web;
 
 import mk.ukim.finki.landfillreport.models.*;
-import mk.ukim.finki.landfillreport.service.CustomUserDetailsService;
-import mk.ukim.finki.landfillreport.service.LandfillImageService;
-import mk.ukim.finki.landfillreport.service.LocationService;
-import mk.ukim.finki.landfillreport.service.ReportService;
+import mk.ukim.finki.landfillreport.service.impl.CustomUserDetailsServiceImpl;
+import mk.ukim.finki.landfillreport.service.impl.LandfillImageServiceImpl;
+import mk.ukim.finki.landfillreport.service.impl.LocationServiceImpl;
+import mk.ukim.finki.landfillreport.service.impl.ReportServiceImpl;
 import mk.ukim.finki.landfillreport.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,17 +23,17 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/reports")
 public class ReportApiController {
-    private final ReportService reportService;
-    private final LandfillImageService imageService;
-    private final LocationService locationService;
-    private final CustomUserDetailsService userService;
+    private final ReportServiceImpl reportServiceImpl;
+    private final LandfillImageServiceImpl imageService;
+    private final LocationServiceImpl locationServiceImpl;
+    private final CustomUserDetailsServiceImpl userService;
 
     @Autowired
-    public ReportApiController(ReportService reportService, LandfillImageService imageService,
-                            LocationService locationService, CustomUserDetailsService userService) {
-        this.reportService = reportService;
+    public ReportApiController(ReportServiceImpl reportServiceImpl, LandfillImageServiceImpl imageService,
+                               LocationServiceImpl locationServiceImpl, CustomUserDetailsServiceImpl userService) {
+        this.reportServiceImpl = reportServiceImpl;
         this.imageService = imageService;
-        this.locationService = locationService;
+        this.locationServiceImpl = locationServiceImpl;
         this.userService = userService;
     }
 
@@ -42,11 +42,11 @@ public class ReportApiController {
         List<Report> reports;
 
         if (status == null || "ALL".equals(status)) {
-            reports = reportService.getAllReports();
+            reports = reportServiceImpl.getAllReports();
         } else {
             try {
                 Status reportStatus = Status.valueOf(status.toUpperCase());
-                reports = reportService.filterByStatus(reportStatus);
+                reports = reportServiceImpl.filterByStatus(reportStatus);
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().build();
             }
@@ -58,7 +58,7 @@ public class ReportApiController {
     @GetMapping("/{id}")
     public ResponseEntity<ReportDTO> getReportById(@PathVariable Long id) {
         try {
-            Report report = reportService.getReportById(id);
+            Report report = reportServiceImpl.getReportById(id);
             return ResponseEntity.ok(new ReportDTO(report));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -71,32 +71,27 @@ public class ReportApiController {
                                           @RequestParam("longitude") Double longitude,
                                           @RequestParam("image") MultipartFile image) {
         try {
-            // Create and save location
             Location newLocation = new Location(latitude, longitude);
-            locationService.saveLocation(newLocation);
+            locationServiceImpl.saveLocation(newLocation);
 
-            // Create and save image
             LandfillImage img = new LandfillImage(image.getOriginalFilename(),
                     image.getContentType(),
                     ImageUtils.compressImage(image.getBytes()));
             imageService.saveImage(img);
 
-            // Create report
             Report report = new Report();
             report.setLocation(newLocation);
             report.setDescription(description);
             report.setImage(img);
-            report.setStatus(Status.PENDING); // Default status
+            report.setStatus(Status.PENDING);
 
-            // Set user from authentication
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
             UserProfile user = userService.findUserByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             report.setUser(user);
 
-            // Save report
-            reportService.saveReport(report);
+            reportServiceImpl.saveReport(report);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(report);
         } catch (IOException e) {
@@ -118,7 +113,7 @@ public class ReportApiController {
                 return ResponseEntity.badRequest().body("Invalid status value");
             }
 
-            reportService.updateReportStatus(id, newStatus);
+            reportServiceImpl.updateReportStatus(id, newStatus);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

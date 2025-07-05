@@ -20,8 +20,6 @@ public class Prediction {
 
     private LocalDateTime predictedAt = LocalDateTime.now();
 
-//    private Double confidenceScore;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;

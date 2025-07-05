@@ -32,36 +32,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Get authorization header
         String authHeader = request.getHeader("Authorization");
 
-        // Log the auth header to debug
         logger.info("Auth header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
-                // Extract token and remove any duplicate "Bearer" prefixes
                 String token = authHeader.substring(7).trim();
                 if (token.startsWith("Bearer ")) {
                     token = token.substring(7).trim();
                 }
                 logger.info("Extracted token: " + token);
 
-                // Decode token (in a real app, use proper JWT validation)
                 String decodedToken = new String(Base64.getDecoder().decode(token));
                 logger.info("Decoded token: " + decodedToken);
 
-                // Parse token parts
                 String[] parts = decodedToken.split(":");
                 String username = parts[0];
 
-                // Find user in database
                 Optional<UserProfile> userOpt = userRepository.findByUsername(username);
 
                 if (userOpt.isPresent()) {
                     UserProfile user = userOpt.get();
 
-                    // Create authentication token
                     List<SimpleGrantedAuthority> authorities = Collections.singletonList(
                             new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
                     );
@@ -69,7 +62,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
 
-                    // Set authentication in context
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     logger.info("Successfully authenticated user: " + username);
                 } else {
