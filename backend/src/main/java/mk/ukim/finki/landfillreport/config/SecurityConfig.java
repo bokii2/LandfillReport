@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/reports").hasAnyRole("NORMAL_USER")
                         .requestMatchers("/api/reports/**").hasRole("ADMIN")
+                        .requestMatchers("/api/predictions/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         // Web UI paths (if needed)
                         .requestMatchers("/", "/login", "/register").permitAll()

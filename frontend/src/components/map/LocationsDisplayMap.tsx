@@ -10,8 +10,8 @@ import { ILocation } from "@/typings/Location.type";
 // Reuse your existing icon creation function
 const createMarkerIcon = () => {
   return new L.Icon({
-    iconUrl: "/images/marker-icon.png",
-    iconRetinaUrl: "/images/marker-icon-2x.png",
+    iconUrl: "/images/marker-icon-blue.png",
+    iconRetinaUrl: "/images/marker-icon-blue-2x.png",
     shadowUrl: "/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],

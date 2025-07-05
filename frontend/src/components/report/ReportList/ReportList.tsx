@@ -18,6 +18,7 @@ import {
   Heading,
   HStack,
   Icon,
+  Select,
   SimpleGrid,
   Spinner,
   Text,
@@ -29,14 +30,18 @@ import { ReportItem } from "../ReportItem/ReportItem";
 import EnhancedLocationMap from "@/components/map/EnhancedLocationMap";
 import { FiArrowLeft, FiFileText, FiRefreshCw } from "react-icons/fi";
 import NextLink from "next/link";
+import { useState } from "react";
 
 export const ReportList = () => {
+  const [selectedStatus, setSelectedStatus] = useState("ALL");
+
   const {
     data: reports,
     error,
     isLoading,
     mutate,
-  } = useSWR<IReport[]>(swrKeys.reports, fetcher);
+  } = useSWR<IReport[]>(`${swrKeys.reports}?status=${selectedStatus}`, fetcher);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const cardBgColor = useColorModeValue("white", "gray.800");
@@ -45,6 +50,22 @@ export const ReportList = () => {
   const headingColor = useColorModeValue("gray.800", "white");
 
   if (typeof window === "undefined") return null;
+
+  // Inside the ReportList component:
+  const handleGeneratePredictions = async () => {
+    setIsGenerating(true);
+
+    try {
+      await fetcher(`${swrKeys.predictions}/generate`);
+      await mutate();
+      window.location.reload();
+    } catch (err) {
+      console.error("Error generating predictions", err);
+      alert("Failed to generate predictions.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   // Loading State
   if (isLoading) {
@@ -104,8 +125,8 @@ export const ReportList = () => {
                   report to get started.
                 </Text>
               </VStack>
-              <Button colorScheme="green" leftIcon={<FiFileText />}>
-                Create New Report
+              <Button colorScheme="green" leftIcon={<FiFileText />} as={NextLink} href={`/home`}>
+                Home
               </Button>
             </VStack>
           </Center>
@@ -162,6 +183,17 @@ export const ReportList = () => {
                 </Text>
               </VStack>
               <HStack spacing={3}>
+                <Select
+                  size="sm"
+                  width="200px"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  <option value="ALL">All</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="APPROVED">Approved</option>
+                  <option value="REJECTED">Rejected</option>
+                </Select>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -170,8 +202,8 @@ export const ReportList = () => {
                 >
                   Refresh
                 </Button>
-                <Button size="sm" colorScheme="green" leftIcon={<FiFileText />}>
-                  New Report
+                <Button size="sm" colorScheme="green" leftIcon={<FiFileText />} onClick={handleGeneratePredictions} isLoading={isGenerating}>
+                  Generate New Predictions
                 </Button>
               </HStack>
             </HStack>

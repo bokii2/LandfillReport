@@ -48,6 +48,8 @@ public class ReportService {
             return reportRepository.findByStatus(Status.PENDING);
         else if (status.equals(Status.APPROVED))
             return reportRepository.findByStatus(Status.APPROVED);
+        else if (status.equals(Status.REJECTED))
+            return reportRepository.findByStatus(Status.REJECTED);
         else
             return reportRepository.findAll();
     }

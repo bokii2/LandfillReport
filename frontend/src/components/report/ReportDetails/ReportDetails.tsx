@@ -159,37 +159,6 @@ export const ReportDetails = () => {
     setStatus(event.target.value);
   };
 
-  //   const handleUpdateStatus = async () => {
-  //     if (!reportId) return;
-
-  //     setIsUpdating(true);
-  //     try {
-  //       await api.updateReportStatus(
-  //         reportId,
-  //         status as "APPROVED" | "REJECTED" | "PENDING"
-  //       );
-  //       await mutate(reportUrl);
-  //       toast({
-  //         title: "Status Updated",
-  //         description: "Report status has been successfully updated.",
-  //         status: "success",
-  //         duration: 3000,
-  //         isClosable: true,
-  //       });
-  //     } catch (error) {
-  //       console.error("Failed to update status:", error);
-  //       toast({
-  //         title: "Update Failed",
-  //         description: "Failed to update status. Please try again.",
-  //         status: "error",
-  //         duration: 3000,
-  //         isClosable: true,
-  //       });
-  //     } finally {
-  //       setIsUpdating(false);
-  //     }
-  //   };
-
   const handleUpdateStatus = async () => {
     if (!reportId) {
       console.error("No reportId available");
@@ -276,22 +245,11 @@ export const ReportDetails = () => {
                 <Badge
                   colorScheme={getStatusColor(report.status)}
                   variant="subtle"
-                  //   leftIcon={<Icon as={getStatusIcon(report.status)} />}
                   px={3}
                   py={1}
                 >
                   {report.status}
                 </Badge>
-                {/* {report.priority && (
-                  <Badge colorScheme="purple" variant="outline">
-                    {report.priority.toUpperCase()} PRIORITY
-                  </Badge>
-                )}
-                {report.category && (
-                  <Badge colorScheme="blue" variant="subtle">
-                    {report.category}
-                  </Badge>
-                )} */}
               </HStack>
             </VStack>
           </HStack>
@@ -310,16 +268,11 @@ export const ReportDetails = () => {
                   </HStack>
                 </CardHeader>
                 <CardBody pt={0}>
-                  <EnhancedLocationsDisplayMap locations={report.location} />
-                  {/* <EnhancedMapView
-                    location={report.location}
-                    title={report.title}
-                  /> */}
-                  {/* {report.location.address && (
-                    <Text mt={3} fontSize="sm" color={textColor}>
-                      <strong>Address:</strong> {report.location.address}
-                    </Text>
-                  )} */}
+                  <EnhancedLocationsDisplayMap 
+                  locations=
+                  // {report.location}
+                  {[{ ...report.location, source: "report" }]}
+                   />
                 </CardBody>
               </Card>
 
