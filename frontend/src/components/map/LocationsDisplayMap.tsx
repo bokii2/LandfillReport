@@ -7,7 +7,6 @@ import { Box, Text } from "@chakra-ui/react";
 import "leaflet/dist/leaflet.css";
 import { ILocation } from "@/typings/Location.type";
 
-// Reuse your existing icon creation function
 const createMarkerIcon = () => {
   return new L.Icon({
     iconUrl: "/images/marker-icon-blue.png",
@@ -30,19 +29,18 @@ const LocationsDisplayMap: React.FC<LocationsDisplayMapProps> = ({
   height = 400,
 }) => {
   const [markerIcon, setMarkerIcon] = useState<L.Icon | null>(null);
-  const [center, setCenter] = useState<[number, number]>([41.9981, 21.4254]); // Default center (Skopje)
+  const [center, setCenter] = useState<[number, number]>([41.9981, 21.4254]);
 
   useEffect(() => {
     setMarkerIcon(createMarkerIcon());
 
-    // If locations are loaded and there's at least one, center the map on the first location
     if (locations && locations.length > 0) {
       setCenter([locations[0].latitude, locations[0].longitude]);
     }
   }, [locations]);
 
   if (!markerIcon) {
-    return null; // Wait for the icon to be ready
+    return null;
   }
 
   return (

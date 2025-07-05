@@ -1,10 +1,8 @@
-// app/login/login-client.tsx
 "use client";
 
 import dynamic from "next/dynamic";
 import { Center, Spinner } from "@chakra-ui/react";
 
-// Dynamic import inside client component
 const LoginForm = dynamic(
   () =>
     import("@/components/auth/LoginForm/LoginForm").then((mod) => ({

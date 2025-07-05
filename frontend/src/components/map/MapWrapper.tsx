@@ -5,7 +5,6 @@ import { Box, Spinner } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { IReport } from "@/typings/Report.type";
 
-// Define the props type for our map component
 export interface MapWrapperProps {
   latitude: number;
   longitude: number;
@@ -30,9 +29,6 @@ const DynamicMap = dynamic(() => import("./LeafletMap"), {
   ),
 });
 
-/**
- * Wrapper for the Map component that handles client-side rendering
- */
 const MapWrapper: React.FC<MapWrapperProps> = (props) => {
   return <DynamicMap {...props} />;
 };

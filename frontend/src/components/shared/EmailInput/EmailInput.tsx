@@ -1,20 +1,3 @@
-// import { EmailIcon } from "@chakra-ui/icons";
-// import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
-
-// interface IEmailInputProps {
-//   isSub: boolean;
-// }
-
-// export const EmailInput = ({ isSub }: IEmailInputProps) => {
-//   return (
-//     <InputGroup size="md">
-//       <InputLeftElement>
-//         <EmailIcon />
-//       </InputLeftElement>
-//       <Input pr="4.5rem" type="email" placeholder="Email" disabled={isSub} />
-//     </InputGroup>
-//   );
-// };
 import {
   Input,
   InputGroup,
@@ -45,7 +28,6 @@ export const EmailInput = ({
   isInvalid = false,
   size = "lg",
 }: IEmailInputProps) => {
-  // Color mode values
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");

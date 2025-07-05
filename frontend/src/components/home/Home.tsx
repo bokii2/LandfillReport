@@ -226,7 +226,6 @@ export default function LandfillHomepage() {
     <Box minH="100vh" bg={useColorModeValue("gray.50", "gray.900")}>
       <NavBar />
 
-      {/* Mobile Navigation Drawer */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -252,7 +251,6 @@ export default function LandfillHomepage() {
       </Drawer>
 
       <Container maxW="7xl" py={12}>
-        {/* Hero Section */}
         <VStack spacing={8} textAlign="center" mb={16}>
           <Heading
             size="2xl"
@@ -277,7 +275,6 @@ export default function LandfillHomepage() {
           </HStack>
         </VStack>
 
-        {/* Stats Section */}
         <SimpleGrid columns={{ base: 2, md: 4 }} spacing={6} mb={16}>
           {stats.map((stat) => (
             <Card key={stat.label} bg={bgColor} borderColor={borderColor}>
@@ -297,35 +294,6 @@ export default function LandfillHomepage() {
           ))}
         </SimpleGrid>
 
-        {/* Features Section
-        <VStack spacing={8} mb={16}>
-          <Heading size="lg" color={headingColor} textAlign="center">
-            Powerful Features for Modern Waste Management
-          </Heading>
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8} w="full">
-            {features.map((feature) => (
-              <Card key={feature.title} bg={bgColor} borderColor={borderColor}>
-                <CardBody>
-                  <HStack spacing={4} mb={4}>
-                    <Icon
-                      as={feature.icon}
-                      boxSize={8}
-                      color={`${feature.color}.500`}
-                    />
-                    <Heading size="md" color={headingColor}>
-                      {feature.title}
-                    </Heading>
-                  </HStack>
-                  <Text color={textColor}>
-                    {feature.description}
-                  </Text>
-                </CardBody>
-              </Card>
-            ))}
-          </SimpleGrid>
-        </VStack> */}
-
-        {/* News & Updates Section */}
         <VStack spacing={8} mb={16}>
           <HStack justify="space-between" w="full">
             <Heading size="lg" color={headingColor}>
@@ -408,7 +376,6 @@ export default function LandfillHomepage() {
           </SimpleGrid>
         </VStack>
 
-        {/* Quick Actions */}
         <Card bg={bgColor} borderColor={borderColor}>
           <CardBody>
             <VStack spacing={6}>

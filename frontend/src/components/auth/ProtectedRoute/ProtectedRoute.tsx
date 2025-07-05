@@ -1,4 +1,3 @@
-// components/ProtectedRoute.tsx
 "use client";
 
 import { useEffect, useState, ReactNode } from "react";
@@ -23,7 +22,6 @@ const ProtectedRoute = ({
   useEffect(() => {
     setIsMounted(true);
 
-    // Add debugging
     console.log("ProtectedRoute check - Auth status:", {
       loading,
       isAuthenticated,

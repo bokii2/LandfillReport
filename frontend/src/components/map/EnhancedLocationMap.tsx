@@ -35,28 +35,31 @@ export const EnhancedLocationMap: React.FC<EnhancedLocationMapProps> = ({
     isLoading: locationsLoading,
   } = useSWR<ILocation[]>(swrKeys.locations, fetcher);
 
-  // Only fetch reports if we need to show them
   const {
     data: reports,
     error: reportsError,
     isLoading: reportsLoading,
   } = useSWR<IReport[]>(swrKeys.reports, fetcher);
 
-  const locationsFromReport: ILocation[] = reports?.map(report => ({
-    ...report.location,
-    source: "report", // 👈 add this field
-  })) ?? [];
+  const locationsFromReport: ILocation[] =
+    reports?.map((report) => ({
+      ...report.location,
+      source: "report",
+    })) ?? [];
 
   const locationsFromPredictions: ILocation[] = (locations ?? [])
-    .filter(location =>
-      !locationsFromReport.find(r => r.id === location.id)
+    .filter(
+      (location) => !locationsFromReport.find((r) => r.id === location.id)
     )
-    .map(loc => ({
+    .map((loc) => ({
       ...loc,
-      source: "prediction", // 👈 mark prediction
+      source: "prediction",
     }));
 
-  const combinedLocations: ILocation[] = [...locationsFromReport, ...locationsFromPredictions];
+  const combinedLocations: ILocation[] = [
+    ...locationsFromReport,
+    ...locationsFromPredictions,
+  ];
 
   const isLoading = locationsLoading || (showReports && reportsLoading);
   const error = locationsError || (showReports && reportsError);
@@ -94,7 +97,6 @@ export const EnhancedLocationMap: React.FC<EnhancedLocationMapProps> = ({
       mt={4}
     >
       <EnhancedLocationsDisplayMap
-        // locations={locations}
         locations={combinedLocations}
         reports={showReports ? reports : []}
         height={height}

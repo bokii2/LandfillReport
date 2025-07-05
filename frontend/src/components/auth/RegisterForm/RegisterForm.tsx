@@ -45,14 +45,12 @@ const RegisterForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  // Color mode values
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const cardBgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
   const headingColor = useColorModeValue("gray.800", "white");
 
-  // Initialize form state
   const [values, setValues] = useState<IRegisterForm>({
     name: "",
     surname: "",
@@ -63,7 +61,6 @@ const RegisterForm: React.FC = () => {
   });
   const [errors, setErrors] = useState<Partial<IRegisterForm>>({});
 
-  // Set mounted state after component mounts
   useEffect(() => {
     setIsMounted(true);
     return () => {
@@ -78,7 +75,6 @@ const RegisterForm: React.FC = () => {
       [name]: value,
     });
 
-    // Clear errors for the field being edited
     if (errors[name as keyof IRegisterForm]) {
       setErrors({
         ...errors,
@@ -90,42 +86,36 @@ const RegisterForm: React.FC = () => {
   const validate = (): boolean => {
     const newErrors: Partial<IRegisterForm> = {};
 
-    // Name validation
     if (!values.name.trim()) {
       newErrors.name = "First name is required";
     } else if (values.name.length < 2) {
       newErrors.name = "First name must be at least 2 characters";
     }
 
-    // Surname validation
     if (!values.surname.trim()) {
       newErrors.surname = "Last name is required";
     } else if (values.surname.length < 2) {
       newErrors.surname = "Last name must be at least 2 characters";
     }
 
-    // Username validation
     if (!values.username.trim()) {
       newErrors.username = "Username is required";
     } else if (values.username.length < 3) {
       newErrors.username = "Username must be at least 3 characters";
     }
 
-    // Email validation
     if (!values.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(values.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // Password validation
     if (!values.password) {
       newErrors.password = "Password is required";
     } else if (values.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    // Confirm password validation
     if (!values.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (values.password !== values.confirmPassword) {
@@ -152,7 +142,6 @@ const RegisterForm: React.FC = () => {
         password: values.password,
       };
 
-      // Use absolute URL to Spring backend
       const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
         headers: {
@@ -162,7 +151,6 @@ const RegisterForm: React.FC = () => {
         body: JSON.stringify(registerRequest),
       });
 
-      // Handle potential non-JSON responses
       const contentType = response.headers.get("content-type");
       let data;
 
@@ -181,7 +169,6 @@ const RegisterForm: React.FC = () => {
         throw new Error(data.message || "Registration failed");
       }
 
-      // Registration successful
       if (isMounted) {
         toast({
           title: "Registration successful",
@@ -191,7 +178,6 @@ const RegisterForm: React.FC = () => {
           isClosable: true,
         });
 
-        // Redirect to login page after successful registration
         setTimeout(() => {
           window.location.href = "/login";
         }, 2000);
@@ -224,7 +210,6 @@ const RegisterForm: React.FC = () => {
           >
             <CardBody p={8}>
               <VStack spacing={8} align="stretch">
-                {/* Header Section */}
                 <VStack spacing={4} textAlign="center">
                   <Box
                     w={16}
@@ -250,7 +235,6 @@ const RegisterForm: React.FC = () => {
                   </VStack>
                 </VStack>
 
-                {/* Error Alert */}
                 {errors.invalidError && (
                   <Alert status="error" borderRadius="lg" variant="left-accent">
                     <AlertIcon />
@@ -258,12 +242,9 @@ const RegisterForm: React.FC = () => {
                   </Alert>
                 )}
 
-                {/* Registration Form */}
                 <Box as="form" onSubmit={handleSubmit}>
                   <VStack spacing={6}>
-                    {/* Name Fields Row */}
                     <HStack spacing={4} w="full">
-                      {/* First Name Field */}
                       <FormControl isInvalid={!!errors.name}>
                         <FormLabel
                           htmlFor="name"
@@ -319,7 +300,6 @@ const RegisterForm: React.FC = () => {
                         </FormErrorMessage>
                       </FormControl>
 
-                      {/* Last Name Field */}
                       <FormControl isInvalid={!!errors.surname}>
                         <FormLabel
                           htmlFor="surname"
@@ -378,7 +358,6 @@ const RegisterForm: React.FC = () => {
                       </FormControl>
                     </HStack>
 
-                    {/* Username Field */}
                     <FormControl isInvalid={!!errors.username}>
                       <FormLabel
                         htmlFor="username"
@@ -403,7 +382,6 @@ const RegisterForm: React.FC = () => {
                       </FormErrorMessage>
                     </FormControl>
 
-                    {/* Email Field */}
                     <FormControl isInvalid={!!errors.email}>
                       <FormLabel
                         htmlFor="email"
@@ -428,7 +406,6 @@ const RegisterForm: React.FC = () => {
                       </FormErrorMessage>
                     </FormControl>
 
-                    {/* Password Field */}
                     <FormControl isInvalid={!!errors.password}>
                       <FormLabel
                         htmlFor="password"
@@ -453,7 +430,6 @@ const RegisterForm: React.FC = () => {
                       </FormErrorMessage>
                     </FormControl>
 
-                    {/* Confirm Password Field */}
                     <FormControl isInvalid={!!errors.confirmPassword}>
                       <FormLabel
                         htmlFor="confirmPassword"
@@ -478,7 +454,6 @@ const RegisterForm: React.FC = () => {
                       </FormErrorMessage>
                     </FormControl>
 
-                    {/* Submit Button */}
                     <Button
                       type="submit"
                       colorScheme="green"
@@ -497,7 +472,6 @@ const RegisterForm: React.FC = () => {
                   </VStack>
                 </Box>
 
-                {/* Divider */}
                 <HStack>
                   <Divider />
                   <Text fontSize="sm" color={textColor} whiteSpace="nowrap">
@@ -506,7 +480,6 @@ const RegisterForm: React.FC = () => {
                   <Divider />
                 </HStack>
 
-                {/* Login Link */}
                 <VStack spacing={3}>
                   <Text fontSize="sm" color={textColor} textAlign="center">
                     Ready to sign in?
@@ -533,7 +506,6 @@ const RegisterForm: React.FC = () => {
                   </Button>
                 </VStack>
 
-                {/* Footer */}
                 <Text fontSize="xs" color={textColor} textAlign="center">
                   By creating an account, you agree to our Terms of Service and
                   Privacy Policy

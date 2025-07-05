@@ -92,7 +92,6 @@ export const ReportDetails = () => {
 
   if (typeof window === "undefined") return null;
 
-  // Loading State
   if (isLoading) {
     return (
       <Box minH="100vh" bg={bgColor}>
@@ -108,7 +107,6 @@ export const ReportDetails = () => {
     );
   }
 
-  // Error State
   if (error) {
     return (
       <Box minH="100vh" bg={bgColor}>
@@ -125,7 +123,6 @@ export const ReportDetails = () => {
     );
   }
 
-  // Not Found State
   if (!report) {
     return (
       <Box minH="100vh" bg={bgColor}>
@@ -165,8 +162,7 @@ export const ReportDetails = () => {
       return;
     }
 
-    console.log("Updating status:", { reportId, status }); // Debug log
-
+    console.log("Updating status:", { reportId, status });
     setIsUpdating(true);
     try {
       await api.updateReportStatus(reportId, status);
@@ -181,7 +177,6 @@ export const ReportDetails = () => {
     } catch (error) {
       console.error("Failed to update status:", error);
 
-      // More detailed error message
       let errorMessage = "Failed to update status. Please try again.";
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -227,7 +222,6 @@ export const ReportDetails = () => {
     <Box minH="100vh" bg={bgColor}>
       <Container maxW="6xl" py={8}>
         <VStack spacing={8} align="stretch">
-          {/* Header */}
           <HStack justify="space-between" align="start">
             <VStack align="start" spacing={2}>
               <Button
@@ -238,9 +232,7 @@ export const ReportDetails = () => {
               >
                 Back to Reports
               </Button>
-              {/* <Heading size="xl" color={headingColor}>
-                {report.title || 'Report Details'}
-              </Heading> */}
+
               <HStack spacing={3}>
                 <Badge
                   colorScheme={getStatusColor(report.status)}
@@ -255,9 +247,7 @@ export const ReportDetails = () => {
           </HStack>
 
           <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8}>
-            {/* Left Column - Map and Image */}
             <VStack spacing={6} align="stretch">
-              {/* Map Section */}
               <Card bg={cardBgColor} borderColor={borderColor}>
                 <CardHeader>
                   <HStack>
@@ -268,15 +258,12 @@ export const ReportDetails = () => {
                   </HStack>
                 </CardHeader>
                 <CardBody pt={0}>
-                  <EnhancedLocationsDisplayMap 
-                  locations=
-                  // {report.location}
-                  {[{ ...report.location, source: "report" }]}
-                   />
+                  <EnhancedLocationsDisplayMap
+                    locations={[{ ...report.location, source: "report" }]}
+                  />
                 </CardBody>
               </Card>
 
-              {/* Image Section */}
               {imageSrc && (
                 <Card bg={cardBgColor} borderColor={borderColor}>
                   <CardHeader>
@@ -296,19 +283,12 @@ export const ReportDetails = () => {
                       border="1px solid"
                       borderColor={borderColor}
                     />
-                    {/* {report.image?.filename && (
-                      <Text mt={2} fontSize="sm" color={textColor}>
-                        {report.image.filename}
-                      </Text>
-                    )} */}
                   </CardBody>
                 </Card>
               )}
             </VStack>
 
-            {/* Right Column - Details and Actions */}
             <VStack spacing={6} align="stretch">
-              {/* Report Details */}
               <Card bg={cardBgColor} borderColor={borderColor}>
                 <CardHeader>
                   <HStack>
@@ -360,7 +340,6 @@ export const ReportDetails = () => {
                 </CardBody>
               </Card>
 
-              {/* Status Management */}
               <Card bg={cardBgColor} borderColor={borderColor}>
                 <CardHeader>
                   <HStack>

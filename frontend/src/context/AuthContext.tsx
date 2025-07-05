@@ -1,4 +1,3 @@
-// context/AuthContext.tsx
 "use client";
 
 import React, {
@@ -41,11 +40,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
 
-  // Use separate useEffect for client-side code to prevent hydration mismatch
   useEffect(() => {
     setIsMounted(true);
 
-    // Only run this code on the client
     const loadUserFromStorage = () => {
       const storedUser = localStorage.getItem("currentUser");
       if (storedUser) {
@@ -57,7 +54,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       }
 
-      // Start auth check after checking local storage
       checkAuthStatus();
     };
 
@@ -70,7 +66,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkAuthStatus = async () => {
     try {
-      // Check for authentication token
       const token = localStorage.getItem("authToken");
       console.log("Auth check - token exists:", !!token);
 
@@ -80,7 +75,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
 
-      // Make request with token
       const response = await fetch("http://localhost:8080/api/auth/me", {
         headers: {
           Authorization: `Bearer ${token}`,

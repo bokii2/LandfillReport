@@ -125,7 +125,12 @@ export const ReportList = () => {
                   report to get started.
                 </Text>
               </VStack>
-              <Button colorScheme="green" leftIcon={<FiFileText />} as={NextLink} href={`/home`}>
+              <Button
+                colorScheme="green"
+                leftIcon={<FiFileText />}
+                as={NextLink}
+                href={`/home`}
+              >
                 Home
               </Button>
             </VStack>
@@ -202,13 +207,18 @@ export const ReportList = () => {
                 >
                   Refresh
                 </Button>
-                <Button size="sm" colorScheme="green" leftIcon={<FiFileText />} onClick={handleGeneratePredictions} isLoading={isGenerating}>
+                <Button
+                  size="sm"
+                  colorScheme="green"
+                  leftIcon={<FiFileText />}
+                  onClick={handleGeneratePredictions}
+                  isLoading={isGenerating}
+                >
                   Generate New Predictions
                 </Button>
               </HStack>
             </HStack>
 
-            {/* Reports Grid */}
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
               {reports.map((report) => (
                 <ReportItem key={report.id} report={report} />

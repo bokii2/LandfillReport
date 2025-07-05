@@ -9,11 +9,9 @@ import { ILocation } from "@/typings/Location.type";
 import { IReport } from "@/typings/Report.type";
 import NextLink from "next/link";
 
-// Reuse your existing icon creation function
 const createMarkerIcon = (color: string) => {
   return new L.Icon({
     iconUrl: `/images/marker-icon-${color}.png`,
-    // iconRetinaUrl: `/images/marker-icon-${color}-2x.png`,
     shadowUrl: "/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -33,7 +31,7 @@ export interface EnhancedLocationsDisplayMapProps {
 const EnhancedLocationsDisplayMap: React.FC<
   EnhancedLocationsDisplayMapProps
 > = ({ locations, reports = [], height = 400 }) => {
-  const [center, setCenter] = useState<[number, number]>([41.9981, 21.4254]); // Default center (Skopje)
+  const [center, setCenter] = useState<[number, number]>([41.9981, 21.4254]);
 
   const [reportIcon, setReportIcon] = useState<L.Icon | null>(null);
   const [predictionIcon, setPredictionIcon] = useState<L.Icon | null>(null);
@@ -44,14 +42,13 @@ const EnhancedLocationsDisplayMap: React.FC<
     : locations
     ? [locations]
     : [];
-  
-  console.log(locations)
+
+  console.log(locations);
 
   useEffect(() => {
     setReportIcon(createMarkerIcon("blue"));
     setPredictionIcon(createMarkerIcon("red"));
 
-    // If locations are loaded and there's at least one, center the map on the first location
     if (normalizedLocations.length > 0) {
       setCenter([
         normalizedLocations[0].latitude,
@@ -60,7 +57,6 @@ const EnhancedLocationsDisplayMap: React.FC<
     }
   }, [locations]);
 
-  // Get status badge color based on report status
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PENDING":
@@ -76,7 +72,6 @@ const EnhancedLocationsDisplayMap: React.FC<
     }
   };
 
-  // Find reports that match locations for enhanced popups
   const getReportForLocation = (locationId: number) => {
     return reports.find(
       (report) => report.location && report.location.id === locationId
@@ -98,7 +93,8 @@ const EnhancedLocationsDisplayMap: React.FC<
         {normalizedLocations.map((location) => {
           const report = getReportForLocation(location.id);
 
-          const icon = location.source === "report" ? reportIcon : predictionIcon;
+          const icon =
+            location.source === "report" ? reportIcon : predictionIcon;
           if (!icon) return null;
 
           return (

@@ -1,38 +1,3 @@
-// import { LockIcon, ViewIcon } from "@chakra-ui/icons";
-// import {
-//   Input,
-//   InputGroup,
-//   InputLeftElement,
-//   InputRightElement,
-// } from "@chakra-ui/react";
-// import { useState } from "react";
-
-// interface IPassowrdInputProps {
-//   isSub: boolean;
-// }
-
-// export const PasswordInput = ({ isSub }: IPassowrdInputProps) => {
-//   const [show, setShow] = useState(false);
-//   const handleClick = () => setShow(!show);
-
-//   return (
-//     <InputGroup size="md">
-//       <InputLeftElement>
-//         <LockIcon />
-//       </InputLeftElement>
-//       <Input
-//         pr="4.5rem"
-//         type={show ? "text" : "password"}
-//         placeholder="Password"
-//         disabled={isSub}
-//       />
-//       <InputRightElement width="4.5rem">
-//         <ViewIcon onClick={handleClick} cursor="pointer" />
-//       </InputRightElement>
-//     </InputGroup>
-//   );
-// };
-
 import React, { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
@@ -69,7 +34,6 @@ export const PasswordInput = ({
 }: IPasswordInputProps) => {
   const [show, setShow] = useState(false);
 
-  // Color mode values
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");

@@ -46,7 +46,6 @@ import {
 export const ReportForm = () => {
   const toast = useToast();
 
-  // Color mode values - must be at the top before any returns
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const cardBgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -60,22 +59,18 @@ export const ReportForm = () => {
   const [success, setSuccess] = useState(false);
   const [submitProgress, setSubmitProgress] = useState(0);
 
-  // Form data
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
-  // Validation states
   const [descriptionError, setDescriptionError] = useState("");
   const [locationError, setLocationError] = useState("");
   const [imageError, setImageError] = useState("");
 
-  // Refs
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Get current location
   const getCurrentLocation = () => {
     setError(null);
     setLocationError("");
@@ -114,20 +109,17 @@ export const ReportForm = () => {
     );
   };
 
-  // Handle map position change
   const handlePositionChange = (lat: number, lng: number) => {
     setLatitude(lat);
     setLongitude(lng);
     setLocationError("");
   };
 
-  // Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (!file) return;
 
-    // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setImageError(
         "Image file is too large. Please select an image under 5MB."
@@ -136,7 +128,6 @@ export const ReportForm = () => {
       return;
     }
 
-    // Check file type
     if (!file.type.startsWith("image/")) {
       setImageError("Please select an image file.");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -146,7 +137,6 @@ export const ReportForm = () => {
     setImage(file);
     setImageError("");
 
-    // Create preview
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result as string);
@@ -154,24 +144,20 @@ export const ReportForm = () => {
     reader.readAsDataURL(file);
   };
 
-  // Remove image
   const removeImage = () => {
     setImage(null);
     setPreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Reset errors
     setError(null);
     setDescriptionError("");
     setLocationError("");
     setImageError("");
 
-    // Validate form data
     let isValid = true;
 
     if (!description.trim()) {
@@ -199,7 +185,6 @@ export const ReportForm = () => {
     setSubmitProgress(0);
 
     try {
-      // Simulate progress
       const progressInterval = setInterval(() => {
         setSubmitProgress((prev) => {
           if (prev >= 90) {
@@ -210,7 +195,6 @@ export const ReportForm = () => {
         });
       }, 200);
 
-      // Send report to API
       await api.sendReport({
         description,
         latitude: latitude!,
@@ -221,7 +205,6 @@ export const ReportForm = () => {
       clearInterval(progressInterval);
       setSubmitProgress(100);
 
-      // Reset form on success
       setSuccess(true);
       setDescription("");
       setLatitude(null);
@@ -230,7 +213,6 @@ export const ReportForm = () => {
       setPreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      // Show success toast
       toast({
         title: "Report submitted",
         description: "Your landfill report has been submitted successfully.",
@@ -239,7 +221,6 @@ export const ReportForm = () => {
         isClosable: true,
       });
 
-      // Redirect to reports list after 3 seconds
       setTimeout(() => {
         window.location.href = "/home";
       }, 3000);
@@ -301,7 +282,6 @@ export const ReportForm = () => {
     <Box minH="100vh" bg={bgColor}>
       <Container maxW="6xl" py={8}>
         <VStack spacing={8} align="stretch">
-          {/* Header */}
           <HStack justify="space-between" align="start">
             <VStack align="start" spacing={2}>
               <Button
@@ -325,9 +305,7 @@ export const ReportForm = () => {
 
           <Box as="form" onSubmit={handleSubmit}>
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8}>
-              {/* Left Column - Form Fields */}
               <VStack spacing={6} align="stretch">
-                {/* Error display */}
                 {error && (
                   <Alert status="error" borderRadius="lg">
                     <AlertIcon />
@@ -335,7 +313,6 @@ export const ReportForm = () => {
                   </Alert>
                 )}
 
-                {/* Description */}
                 <Card bg={cardBgColor} borderColor={borderColor}>
                   <CardHeader>
                     <HStack>
@@ -366,7 +343,6 @@ export const ReportForm = () => {
                   </CardBody>
                 </Card>
 
-                {/* Image Upload */}
                 <Card bg={cardBgColor} borderColor={borderColor}>
                   <CardHeader>
                     <HStack>
@@ -455,7 +431,6 @@ export const ReportForm = () => {
                 </Card>
               </VStack>
 
-              {/* Right Column - Location */}
               <VStack spacing={6} align="stretch">
                 <Card bg={cardBgColor} borderColor={borderColor}>
                   <CardHeader>
@@ -492,7 +467,6 @@ export const ReportForm = () => {
                           )}
                         </ButtonGroup>
 
-                        {/* Coordinates display */}
                         {latitude !== null && longitude !== null && (
                           <Box p={3} bg={hoverBg} borderRadius="md">
                             <Text
@@ -510,10 +484,9 @@ export const ReportForm = () => {
                           </Box>
                         )}
 
-                        {/* Map */}
                         <Box borderRadius="lg" overflow="hidden">
                           <MapWrapper
-                            latitude={latitude || 41.9981} // Default to Macedonia/Skopje
+                            latitude={latitude || 41.9981}
                             longitude={longitude || 21.4254}
                             onPositionChange={handlePositionChange}
                             selectable={true}
@@ -529,7 +502,6 @@ export const ReportForm = () => {
                           Click on the map to manually set the location
                         </Text>
                       </VStack>
-
                       <FormErrorMessage>{locationError}</FormErrorMessage>
                     </FormControl>
                   </CardBody>
@@ -537,7 +509,6 @@ export const ReportForm = () => {
               </VStack>
             </SimpleGrid>
 
-            {/* Submit Section */}
             <Card bg={cardBgColor} borderColor={borderColor} mt={8}>
               <CardBody>
                 <VStack spacing={4}>

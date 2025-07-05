@@ -26,9 +26,6 @@ import { FiUser, FiLogIn, FiUserPlus } from "react-icons/fi";
 import { EmailInput } from "@/components/shared/EmailInput/EmailInput";
 import { PasswordInput } from "@/components/shared/PasswordInput/PasswordInput";
 
-// Import the redesigned input components
-
-// Define types locally to avoid potential import issues
 interface ILoginForm {
   username: string;
   password: string;
@@ -40,21 +37,18 @@ const LoginForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  // Color mode values
   const bgColor = useColorModeValue("gray.50", "gray.900");
   const cardBgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
   const headingColor = useColorModeValue("gray.800", "white");
 
-  // Initialize form state
   const [values, setValues] = useState<ILoginForm>({
     username: "",
     password: "",
   });
   const [errors, setErrors] = useState<Partial<ILoginForm>>({});
 
-  // Set mounted state after component mounts
   useEffect(() => {
     setIsMounted(true);
     return () => {
@@ -105,7 +99,6 @@ const LoginForm: React.FC = () => {
         password: values.password,
       };
 
-      // Use absolute URL to Spring backend
       const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: {
@@ -115,7 +108,6 @@ const LoginForm: React.FC = () => {
         body: JSON.stringify(loginRequest),
       });
 
-      // Handle potential non-JSON responses
       const contentType = response.headers.get("content-type");
       let data;
 
@@ -134,11 +126,9 @@ const LoginForm: React.FC = () => {
         throw new Error(data.message || "Login failed");
       }
 
-      // Get token from response
       const authToken = response.headers.get("Authorization") || data.token;
       const userData = data.user || data;
 
-      // Store auth token and user data
       if (isMounted) {
         localStorage.setItem("currentUser", JSON.stringify(userData));
         if (authToken) {
@@ -186,7 +176,6 @@ const LoginForm: React.FC = () => {
           >
             <CardBody p={8}>
               <VStack spacing={8} align="stretch">
-                {/* Header Section */}
                 <VStack spacing={4} textAlign="center">
                   <Box
                     w={16}
@@ -211,7 +200,6 @@ const LoginForm: React.FC = () => {
                   </VStack>
                 </VStack>
 
-                {/* Error Alert */}
                 {errors.invalidError && (
                   <Alert status="error" borderRadius="lg" variant="left-accent">
                     <AlertIcon />
@@ -219,10 +207,8 @@ const LoginForm: React.FC = () => {
                   </Alert>
                 )}
 
-                {/* Login Form */}
                 <Box as="form" onSubmit={handleSubmit}>
                   <VStack spacing={6}>
-                    {/* Email Field */}
                     <FormControl isInvalid={!!errors.username}>
                       <FormLabel
                         htmlFor="username"
@@ -247,7 +233,6 @@ const LoginForm: React.FC = () => {
                       </FormErrorMessage>
                     </FormControl>
 
-                    {/* Password Field */}
                     <FormControl isInvalid={!!errors.password}>
                       <FormLabel
                         htmlFor="password"
@@ -272,7 +257,6 @@ const LoginForm: React.FC = () => {
                       </FormErrorMessage>
                     </FormControl>
 
-                    {/* Submit Button */}
                     <Button
                       type="submit"
                       colorScheme="green"
@@ -291,7 +275,6 @@ const LoginForm: React.FC = () => {
                   </VStack>
                 </Box>
 
-                {/* Divider */}
                 <HStack>
                   <Divider />
                   <Text fontSize="sm" color={textColor} whiteSpace="nowrap">
@@ -300,7 +283,6 @@ const LoginForm: React.FC = () => {
                   <Divider />
                 </HStack>
 
-                {/* Register Link */}
                 <VStack spacing={3}>
                   <Text fontSize="sm" color={textColor} textAlign="center">
                     Don&apos;t have an account yet?
@@ -327,7 +309,6 @@ const LoginForm: React.FC = () => {
                   </Button>
                 </VStack>
 
-                {/* Footer */}
                 <Text fontSize="xs" color={textColor} textAlign="center">
                   By signing in, you agree to our Terms of Service and Privacy
                   Policy
@@ -341,8 +322,6 @@ const LoginForm: React.FC = () => {
   );
 };
 
-// Change to default export for dynamic import compatibility
 export default LoginForm;
 
-// Also keep named export for backwards compatibility
 export { LoginForm };
