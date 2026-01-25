@@ -36,7 +36,6 @@ const EnhancedLocationsDisplayMap: React.FC<
   const [reportIcon, setReportIcon] = useState<L.Icon | null>(null);
   const [predictionIcon, setPredictionIcon] = useState<L.Icon | null>(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const normalizedLocations = Array.isArray(locations)
     ? locations
     : locations
