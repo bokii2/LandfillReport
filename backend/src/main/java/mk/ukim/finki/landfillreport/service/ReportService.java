@@ -11,4 +11,5 @@ public interface ReportService {
     void saveReport(Report report);
     void updateReportStatus(Long id, Status status);
     List<Report> filterByStatus(Status status);
+    List<Report> getAllReportsByUser(Long id);
 }

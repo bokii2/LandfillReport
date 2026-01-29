@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -128,5 +129,15 @@ public class ReportApiController {
                 .ok()
                 .contentType(MediaType.valueOf(landfillImage.getType()))
                 .body(ImageUtils.decompressImage(landfillImage.getImageData()))).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<Report>> getReportsByUser(Authentication authentication) {
+        String username = authentication.getName();
+        UserProfile user = userService.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
+                "User not found: " + username));
+        List<Report> reportsByUser = reportServiceImpl.getAllReportsByUser(user.getId());
+        
+        return ResponseEntity.ok(reportsByUser);
     }
 }
