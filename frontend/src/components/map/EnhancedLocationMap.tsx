@@ -41,15 +41,20 @@ export const EnhancedLocationMap: React.FC<EnhancedLocationMapProps> = ({
     isLoading: reportsLoading,
   } = useSWR<IReport[]>(swrKeys.reports, fetcher);
 
+  const reportLocationIds = reports
+  ? new Set<number>(reports.map(r => r.location.id))
+  : new Set<number>();
+
   const locationsFromReport: ILocation[] =
-    reports?.map((report) => ({
+    reports?.filter(report => report.status !== "REJECTED")
+    .map((report) => ({
       ...report.location,
       source: "report",
     })) ?? [];
 
   const locationsFromPredictions: ILocation[] = (locations ?? [])
     .filter(
-      (location) => !locationsFromReport.find((r) => r.id === location.id)
+      (location) => !reportLocationIds.has(location.id)
     )
     .map((loc) => ({
       ...loc,
