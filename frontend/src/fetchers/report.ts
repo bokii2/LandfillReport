@@ -126,4 +126,8 @@ export const api = {
   getLocations: () => {
     return fetcher<Location[]>(swrKeys.locations);
   },
+
+  getReportsByUser: () => {
+    return fetcher<Report[]>(swrKeys.reportsByMe);
+  },
 };

@@ -68,7 +68,9 @@ export default function LandfillHomepage() {
     ...(isAdmin
       ? [{ name: "Reports", href: "/reports" }]
       : [{ name: "Send Report", href: "/send-report" }]),
-    { name: "Sites", href: "/sites" },
+    ...(!isAdmin
+    ? [{ name: "My Reports", href: "/my-reports" }]
+    : [])
   ];
 
   const stats = [
