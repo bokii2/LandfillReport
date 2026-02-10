@@ -70,7 +70,7 @@ export const ReportDetails = () => {
   } = useSWR<IReport>(reportUrl, fetcher);
 
   const [status, setStatus] = useState<string>("");
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  // const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const bgColor = useColorModeValue("gray.50", "gray.900");
@@ -82,11 +82,11 @@ export const ReportDetails = () => {
   useEffect(() => {
     if (report) {
       setStatus(report.status);
-      if (report.image?.imageData) {
-        setImageSrc(
-          `data:${report.image.type};base64,${report.image.imageData}`
-        );
-      }
+      // if (report.image?.imageData) {
+      //   setImageSrc(
+      //     `data:${report.image.type};base64,${report.image.imageData}`
+      //   );
+      // }
     }
   }, [report]);
 
@@ -264,7 +264,7 @@ export const ReportDetails = () => {
                 </CardBody>
               </Card>
 
-              {imageSrc && (
+              {report.image && (
                 <Card bg={cardBgColor} borderColor={borderColor}>
                   <CardHeader>
                     <HStack>
@@ -276,7 +276,7 @@ export const ReportDetails = () => {
                   </CardHeader>
                   <CardBody pt={0}>
                     <Image
-                      src={imageSrc}
+                      src={api.getImageUrl(report.id)}
                       alt="Report attachment"
                       maxW="100%"
                       borderRadius="md"
