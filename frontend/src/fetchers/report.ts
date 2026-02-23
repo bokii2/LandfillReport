@@ -1,3 +1,4 @@
+import { INewsArticle } from "@/typings/NewsArticle.type";
 import { fetcher, FetchError } from "./fetcher";
 import { swrKeys } from "./swrKeys";
 
@@ -130,4 +131,8 @@ export const api = {
   getReportsByUser: () => {
     return fetcher<Report[]>(swrKeys.reportsByMe);
   },
+
+  getNews: () => {
+    return fetcher<INewsArticle[]>(swrKeys.news);
+  }
 };

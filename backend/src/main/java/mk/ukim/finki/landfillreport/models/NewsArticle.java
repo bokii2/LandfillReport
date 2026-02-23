@@ -7,10 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Table(name = "news_articles"
-//        , uniqueConstraints = {
-//        @UniqueConstraint(columnNames = "url")}
-)
+@Table(name = "news_articles")
 @Getter
 @Setter
 @Data
@@ -20,9 +17,10 @@ public class NewsArticle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String title;
 
-    @Column(length = 1000)
+    @Column(length = 1000, unique = true)
     private String url;
 
     private String source;

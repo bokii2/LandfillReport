@@ -7,5 +7,6 @@ export const swrKeys = {
   login: `${apiUrl}/auth/login`,
   me: `${apiUrl}/auth/me`,
   predictions: `${apiUrl}/predictions`,
-  reportsByMe: `${apiUrl}/reports/me`
+  reportsByMe: `${apiUrl}/reports/me`,
+  news: `${apiUrl}/news`
 };

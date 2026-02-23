@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -63,5 +64,11 @@ public class NewsArticleServiceImpl implements NewsArticleService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteOldNews(LocalDateTime cutOff) {
+        newsArticleRepository.deleteByScrapedAtBefore(cutOff);
     }
 }

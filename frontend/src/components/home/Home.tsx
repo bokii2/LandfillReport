@@ -50,6 +50,7 @@ import { IUserProfile } from "@/typings/UserProfile.type";
 import useSWR, { mutate } from "swr";
 import { swrKeys } from "@/fetchers/swrKeys";
 import { fetcher } from "@/fetchers/fetcher";
+import { INewsArticle } from "@/typings/NewsArticle.type";
 
 export default function LandfillHomepage() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -68,9 +69,7 @@ export default function LandfillHomepage() {
     ...(isAdmin
       ? [{ name: "Reports", href: "/reports" }]
       : [{ name: "Send Report", href: "/send-report" }]),
-    ...(!isAdmin
-    ? [{ name: "My Reports", href: "/my-reports" }]
-    : [])
+    ...(!isAdmin ? [{ name: "My Reports", href: "/my-reports" }] : []),
   ];
 
   const stats = [
@@ -80,52 +79,11 @@ export default function LandfillHomepage() {
     { label: "Data Points", value: "2.1M", color: "orange" },
   ];
 
-  const newsItems = [
-    {
-      id: 1,
-      title: "New EPA Regulations for Landfill Gas Emissions Take Effect",
-      summary:
-        "Updated federal guidelines require enhanced monitoring systems for methane capture and reporting.",
-      date: "2025-06-05",
-      category: "Regulatory",
-      categoryColor: "red",
-      readTime: "3 min read",
-      isExternal: true,
-    },
-    {
-      id: 2,
-      title: "Q2 2025 Waste Management Industry Report Released",
-      summary:
-        "Industry analysis shows 15% increase in recycling rates and improved landfill diversion strategies.",
-      date: "2025-06-03",
-      category: "Industry",
-      categoryColor: "blue",
-      readTime: "5 min read",
-      isExternal: false,
-    },
-    {
-      id: 3,
-      title: "Advanced Sensor Technology Improves Landfill Monitoring",
-      summary:
-        "IoT-enabled sensors provide real-time data on gas emissions, temperature, and structural integrity.",
-      date: "2025-06-01",
-      category: "Technology",
-      categoryColor: "green",
-      readTime: "4 min read",
-      isExternal: true,
-    },
-    {
-      id: 4,
-      title: "State Funding Available for Landfill Modernization Projects",
-      summary:
-        "$50M allocated for infrastructure upgrades and environmental compliance improvements.",
-      date: "2025-05-28",
-      category: "Funding",
-      categoryColor: "purple",
-      readTime: "2 min read",
-      isExternal: false,
-    },
-  ];
+  const {
+    data: news,
+    error,
+    isLoading,
+  } = useSWR<INewsArticle[]>(`${swrKeys.news}`, fetcher);
 
   const formatDate = (dateString: string | number | Date) => {
     const date = new Date(dateString);
@@ -306,76 +264,61 @@ export default function LandfillHomepage() {
             </Button>
           </HStack>
 
-          <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} w="full">
-            {newsItems.map((news) => (
-              <Card
-                key={news.id}
-                bg={bgColor}
-                borderColor={borderColor}
-                cursor="pointer"
-                transition="all 0.2s"
-                _hover={{
-                  transform: "translateY(-2px)",
-                  shadow: "lg",
-                  borderColor: `${news.categoryColor}.200`,
-                }}
-              >
-                <CardBody>
-                  <VStack align="start" spacing={3}>
-                    <HStack justify="space-between" w="full">
-                      <Badge
-                        colorScheme={news.categoryColor}
-                        variant="subtle"
-                        fontSize="xs"
-                      >
-                        {news.category}
+          {isLoading && <Text>Loading news...</Text>}
+          {error && <Text color="red.400">Failed to load news.</Text>}
+
+          {news && news.length > 0 && (
+            <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6} w="full">
+              {news?.map((article) => (
+                <Card
+                  key={article.id}
+                  bg={bgColor}
+                  borderColor={borderColor}
+                  transition="all 0.2s"
+                  _hover={{
+                    transform: "translateY(-2px)",
+                    shadow: "lg",
+                  }}
+                >
+                  <CardBody>
+                    <VStack align="start" spacing={3}>
+                      <Badge colorScheme="blue" variant="subtle" fontSize="xs">
+                        {article.source}
                       </Badge>
-                      {news.isExternal && (
-                        <Icon
-                          as={FiExternalLink}
-                          boxSize={3}
-                          color={textColor}
-                        />
-                      )}
-                    </HStack>
 
-                    <Heading
-                      size="md"
-                      color={headingColor}
-                      lineHeight="shorter"
-                    >
-                      {news.title}
-                    </Heading>
+                      <Heading
+                        size="md"
+                        color={headingColor}
+                        lineHeight="shorter"
+                      >
+                        {article.title}
+                      </Heading>
 
-                    <Text color={textColor} fontSize="sm" lineHeight="tall">
-                      {news.summary}
-                    </Text>
-
-                    <HStack justify="space-between" w="full" pt={2}>
-                      <HStack spacing={4}>
+                      <HStack justify="space-between" w="full" pt={2}>
                         <HStack spacing={1}>
                           <Icon as={FiClock} boxSize={3} color={textColor} />
                           <Text fontSize="xs" color={textColor}>
-                            {formatDate(news.date)}
+                            {formatDate(article.scrapedAt)}
                           </Text>
                         </HStack>
-                        <Text fontSize="xs" color={textColor}>
-                          {news.readTime}
-                        </Text>
+
+                        <Button
+                          as="a"
+                          href={article.url}
+                          target="_blank"
+                          size="xs"
+                          variant="ghost"
+                          rightIcon={<FiExternalLink />}
+                        >
+                          Open
+                        </Button>
                       </HStack>
-                      <Button
-                        size="xs"
-                        variant="ghost"
-                        rightIcon={<FiArrowRight />}
-                      >
-                        Read More
-                      </Button>
-                    </HStack>
-                  </VStack>
-                </CardBody>
-              </Card>
-            ))}
-          </SimpleGrid>
+                    </VStack>
+                  </CardBody>
+                </Card>
+              ))}
+            </SimpleGrid>
+          )}
         </VStack>
 
         <Card bg={bgColor} borderColor={borderColor}>
