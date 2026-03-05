@@ -74,6 +74,7 @@ export default function Chatbot() {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           placeholder="Ask about landfills..."
         />
         <Button
