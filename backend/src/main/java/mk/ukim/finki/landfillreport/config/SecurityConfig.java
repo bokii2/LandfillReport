@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/api/chat").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/reports").hasAnyRole("NORMAL_USER")
                         .requestMatchers("/api/reports/me").hasRole("NORMAL_USER")
                         .requestMatchers("/api/reports/**").hasRole("ADMIN")

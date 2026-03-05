@@ -18,15 +18,15 @@ public class ScrapingScheduler {
         this.scraper = scraper;
     }
 
-    @PostConstruct
-    public void runOnStartup() {
-        LocalDateTime cutOff = LocalDateTime.now().minusDays(3);
-        scraper.deleteOldNews(cutOff);
-
-        scraper.scrapeForKeyword("депонија");
-        scraper.scrapeForKeyword("диви депонии");
-        scraper.scrapeForKeyword("отпад");
-    }
+//    @PostConstruct
+//    public void runOnStartup() {
+//        LocalDateTime cutOff = LocalDateTime.now().minusDays(3);
+//        scraper.deleteOldNews(cutOff);
+//
+//        scraper.scrapeForKeyword("депонија");
+//        scraper.scrapeForKeyword("диви депонии");
+//        scraper.scrapeForKeyword("отпад");
+//    }
 
 //    @Scheduled(cron = "0 0 3 * * *") // every day at 03:00
 //    public void scrapeDaily() {

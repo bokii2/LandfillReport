@@ -65,7 +65,7 @@ export default function LandfillHomepage() {
   const isAdmin = user?.role === "ADMIN";
 
   const navItems = [
-    { name: "Dashboard", href: "/dashboard" },
+    { name: "Chatbot", href: "/chatbot" },
     ...(isAdmin
       ? [{ name: "Reports", href: "/reports" }]
       : [{ name: "Send Report", href: "/send-report" }]),
