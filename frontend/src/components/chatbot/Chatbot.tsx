@@ -29,7 +29,7 @@ export default function Chatbot() {
       );
 
       setMessages((prev) => [...prev, { role: "assistant", text: data.reply }]);
-    } catch (error) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
