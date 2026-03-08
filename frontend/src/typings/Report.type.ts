@@ -6,6 +6,8 @@ export interface IReport {
     description: string;
     createdAt?: string;
     status: string;
+    imageBase64: string;
+    imageType: string;
     location: ILocation;
     image: ILandfillImage;
     createdBy: string;

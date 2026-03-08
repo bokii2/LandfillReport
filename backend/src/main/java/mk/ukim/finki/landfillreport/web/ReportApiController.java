@@ -39,7 +39,7 @@ public class ReportApiController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Report>> getAllReports(@RequestParam(required = false) String status) {
+    public ResponseEntity<List<Report>> getAllReports(@RequestParam(name = "status", required = false) String status) {
         List<Report> reports;
 
         if (status == null || "ALL".equals(status)) {
@@ -57,7 +57,7 @@ public class ReportApiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReportDTO> getReportById(@PathVariable Long id) {
+    public ResponseEntity<ReportDTO> getReportById(@PathVariable("id") Long id) {
         try {
             Report report = reportServiceImpl.getReportById(id);
             return ResponseEntity.ok(new ReportDTO(report));
@@ -105,7 +105,7 @@ public class ReportApiController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> updateReportStatus(@PathVariable Long id, @RequestParam String status) {
+    public ResponseEntity<?> updateReportStatus(@PathVariable("id") Long id, @RequestParam("status") String status) {
         try {
             Status newStatus;
             try {
@@ -123,7 +123,7 @@ public class ReportApiController {
     }
 
     @GetMapping("/image/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) {
         Optional<LandfillImage> dbImage = imageService.getImageById(id);
         return dbImage.map(landfillImage -> ResponseEntity
                 .ok()
