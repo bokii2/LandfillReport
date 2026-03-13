@@ -1,15 +1,16 @@
 package mk.ukim.finki.landfillreport.scheduler;
 
-import jakarta.annotation.PostConstruct;
 import mk.ukim.finki.landfillreport.service.NewsArticleService;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @EnableScheduling
-@Configuration
+@Component
 public class ScrapingScheduler {
 
     private final NewsArticleService scraper;
@@ -18,16 +19,17 @@ public class ScrapingScheduler {
         this.scraper = scraper;
     }
 
-//    @PostConstruct
-//    public void runOnStartup() {
-//        LocalDateTime cutOff = LocalDateTime.now().minusDays(3);
-//        scraper.deleteOldNews(cutOff);
-//
-//        scraper.scrapeForKeyword("депонија");
-//        scraper.scrapeForKeyword("диви депонии");
-//        scraper.scrapeForKeyword("отпад");
-//    }
+    @EventListener(ApplicationReadyEvent.class)
+    public void runOnStartup() {
+        CompletableFuture.runAsync(() -> {
+            LocalDateTime cutOff = LocalDateTime.now().minusDays(1);
+            scraper.deleteOldNews(cutOff);
 
+            scraper.scrapeForKeyword("депонија");
+            scraper.scrapeForKeyword("диви депонии");
+            scraper.scrapeForKeyword("отпад");
+        });
+    }
 //    @Scheduled(cron = "0 0 3 * * *") // every day at 03:00
 //    public void scrapeDaily() {
 //        scraper.scrapeForKeyword("депонија");

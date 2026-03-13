@@ -38,7 +38,9 @@ public class NewsArticleServiceImpl implements NewsArticleService {
                     URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "&search=news";
 
             Document doc = Jsoup.connect(searchUrl)
-                    .userAgent("Mozilla/5.0")
+                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                    .header("Accept-Language", "mk,en;q=0.5")
                     .timeout(10_000)
                     .get();
 
