@@ -12,11 +12,10 @@ export default function HeroSection() {
     "linear(to-br, white, green.50)",
     "linear(to-br, #171B26, #0F1A12)"
   );
-  const pillBg          = useColorModeValue("white", "#171B26");
 
   return (
     <Box
-      minH="70vh"
+      minH="60vh"
       bgGradient={heroBg}
       display="flex"
       alignItems="center"
@@ -73,29 +72,6 @@ export default function HeroSection() {
             Together we can keep our communities clean and safe.
           </Text>
         </VStack>
-
-        {/* Stat pills */}
-        <Box
-          display="flex" gap={3} flexWrap="wrap" justifyContent="center"
-        >
-          {[
-            { value: "2.4K+", label: "Reports filed" },
-            { value: "98%",   label: "Response rate" },
-            { value: "500+",  label: "Sites cleaned" },
-          ].map(({ value, label }) => (
-            <Box
-              key={label}
-              px={4} py={2}
-              borderRadius="full"
-              border="1px solid" borderColor={dividerColor}
-              bg={pillBg}
-              display="flex" alignItems="center" gap={2}
-            >
-              <Text fontSize="sm" fontWeight="700" color={accentGreen}>{value}</Text>
-              <Text fontSize="sm" color={subtleText} fontWeight="500">{label}</Text>
-            </Box>
-          ))}
-        </Box>
       </VStack>
     </Box>
   );

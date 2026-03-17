@@ -11,6 +11,8 @@ export default function LoginButton() {
   const cardBg       = useColorModeValue("#FFFFFF", "#171B26");
   const cardBorder   = useColorModeValue("rgba(0,0,0,0.07)", "rgba(255,255,255,0.06)");
   const hoverBg      = useColorModeValue("gray.50", "rgba(255,255,255,0.03)");
+  // const pageBg          = useColorModeValue("#F7F8FA", "#0F1117");
+
 
   return (
     <Box
@@ -19,6 +21,7 @@ export default function LoginButton() {
       flexDirection="column"
       alignItems="center"
       gap={4}
+      // bg={pageBg}
     >
       <Text fontSize="sm" color={subtleText} fontWeight="500">
         Ready to make a difference?
