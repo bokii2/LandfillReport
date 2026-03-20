@@ -22,7 +22,7 @@ public class ScrapingScheduler {
     @EventListener(ApplicationReadyEvent.class)
     public void runOnStartup() {
         CompletableFuture.runAsync(() -> {
-            LocalDateTime cutOff = LocalDateTime.now().minusDays(1);
+            LocalDateTime cutOff = LocalDateTime.now().minusDays(3);
             scraper.deleteOldNews(cutOff);
 
             scraper.scrapeForKeyword("депонија");

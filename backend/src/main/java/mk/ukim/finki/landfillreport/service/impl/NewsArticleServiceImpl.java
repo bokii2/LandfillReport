@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,8 @@ public class NewsArticleServiceImpl implements NewsArticleService {
     private static final String BASE_ARTICLE_URL = "https://time.mk/";
 
     @Override
-    public List<NewsArticle> getAllNews() {
-        return newsArticleRepository.findAll();
+    public Page<NewsArticle> getAllNews(Pageable pageable) {
+        return newsArticleRepository.findAll(pageable);
     }
 
     @Override

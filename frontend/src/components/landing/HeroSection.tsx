@@ -68,8 +68,8 @@ export default function HeroSection() {
             maxW="xl"
             lineHeight="1.75"
           >
-            Help protect the environment by reporting illegal waste disposal sites.
-            Together we can keep our communities clean and safe.
+            Monitor, analyze, and report on landfill operations with real-time data insights,
+            automated compliance reporting, and predictive analytics.
           </Text>
         </VStack>
       </VStack>

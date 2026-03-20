@@ -36,8 +36,7 @@ const EnhancedLocationsDisplayMap: React.FC<EnhancedLocationsDisplayMapProps> = 
   showPopups = true,
 }) => {
   const [center, setCenter] = useState<[number, number]>([41.9981, 21.4254]);
-  const [reportIcon, setReportIcon] = useState<L.Icon | null>(null);
-  const [predictionIcon, setPredictionIcon] = useState<L.Icon | null>(null);
+  const [icons, setIcons] = useState<Record<string, L.Icon>>({});
 
   const normalizedLocations = Array.isArray(locations)
     ? locations
@@ -46,13 +45,28 @@ const EnhancedLocationsDisplayMap: React.FC<EnhancedLocationsDisplayMapProps> = 
     : [];
 
   useEffect(() => {
-    setReportIcon(createMarkerIcon("blue"));
-    setPredictionIcon(createMarkerIcon("red"));
+    setIcons({
+      blue: createMarkerIcon("blue"),
+      red:  createMarkerIcon("red"),
+    });
 
     if (normalizedLocations.length > 0) {
       setCenter([normalizedLocations[0].latitude, normalizedLocations[0].longitude]);
     }
   }, [locations]);
+
+  const getReportForLocation = (locationId: number) => {
+    return reports.find(
+      (report) => report.location && report.location.id === locationId
+    );
+  };
+
+  // Red for pending, blue for everything else, skip predictions
+  const getMarkerColor = (location: ColoredLocation): string => {
+    if (location.source === "prediction") return "skip";
+    const report = getReportForLocation(location.id);
+    return report?.status === "PENDING" ? "red" : "blue";
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -62,12 +76,6 @@ const EnhancedLocationsDisplayMap: React.FC<EnhancedLocationsDisplayMapProps> = 
       case "IN_PROGRESS": return "blue";
       default:            return "gray";
     }
-  };
-
-  const getReportForLocation = (locationId: number) => {
-    return reports.find(
-      (report) => report.location && report.location.id === locationId
-    );
   };
 
   return (
@@ -108,7 +116,9 @@ const EnhancedLocationsDisplayMap: React.FC<EnhancedLocationsDisplayMapProps> = 
 
         {normalizedLocations.map((location) => {
           const report = getReportForLocation(location.id);
-          const icon = location.source === "report" ? reportIcon : predictionIcon;
+          const color = getMarkerColor(location);
+          if (color === "skip") return null;
+          const icon = icons[color];
           if (!icon) return null;
 
           return (

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -35,14 +35,12 @@ import {
   FiSun,
   FiMoon,
   FiMenu,
-  FiBarChart,
   FiFileText,
   FiMapPin,
   FiUsers,
   FiSettings,
   FiChevronDown,
   FiClock,
-  FiArrowRight,
   FiExternalLink,
   FiCheckCircle,
   FiAlertCircle,
@@ -54,10 +52,14 @@ import { swrKeys } from "@/fetchers/swrKeys";
 import { fetcher } from "@/fetchers/fetcher";
 import { INewsArticle } from "@/typings/NewsArticle.type";
 import { IReport } from "@/typings/Report.type";
+import dynamic from "next/dynamic";
+
+const HomeMap = dynamic(() => import("@/components/home/Homemap"), { ssr: false });
 
 export default function LandfillHomepage() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [page, setPage] = useState(0);
 
   // ─── All hooks at top ─────────────────────────────────────────────────────
   const pageBg              = useColorModeValue("#F7F8FA", "#0F1117");
@@ -76,7 +78,6 @@ export default function LandfillHomepage() {
   const dividerColor        = useColorModeValue("rgba(0,0,0,0.06)", "rgba(255,255,255,0.06)");
   const hoverBg             = useColorModeValue("gray.50", "rgba(255,255,255,0.04)");
   const navBorder           = useColorModeValue("rgba(0,0,0,0.07)", "rgba(255,255,255,0.06)");
-  const btnHoverBg          = useColorModeValue("#15803D", "#4ADE80");
   const drawerBg            = useColorModeValue("#FFFFFF", "#171B26");
   const heroBgGradient      = useColorModeValue(
     "linear(to-br, white, green.50)",
@@ -90,7 +91,12 @@ export default function LandfillHomepage() {
   const { data: user } = useSWR<IUserProfile>(swrKeys.me, fetcher);
   const isAdmin = user?.role === "ADMIN";
 
-  const { data: news, error: newsError, isLoading: newsLoading } = useSWR<INewsArticle[]>(swrKeys.news, fetcher);
+  const { data: newsData, error: newsError, isLoading: newsLoading } = useSWR<{
+    content: INewsArticle[];
+    totalPages: number;
+    number: number;
+  }>(`${swrKeys.news}?page=${page}&size=6`, fetcher);
+
   const { data: reports, isLoading: reportsLoading } = useSWR<IReport[]>(swrKeys.reports, fetcher);
 
   // ─── Derive real stats from reports ────────────────────────────────────────
@@ -136,13 +142,6 @@ export default function LandfillHomepage() {
       ? [{ name: "Reports", href: "/reports" }]
       : [{ name: "Send Report", href: "/send-report" }]),
     ...(!isAdmin ? [{ name: "My Reports", href: "/my-reports" }] : []),
-  ];
-
-  const quickActions = [
-    { icon: FiFileText, label: "New Report"      },
-    { icon: FiBarChart, label: "View Analytics"  },
-    { icon: FiMapPin,   label: "Manage Sites"    },
-    { icon: FiSettings, label: "System Settings" },
   ];
 
   const formatDate = (dateString: string | number | Date) => {
@@ -285,57 +284,34 @@ export default function LandfillHomepage() {
       <Container maxW="6xl" py={10}>
         <VStack spacing={8} align="stretch">
 
-          {/* ── Hero ─────────────────────────────────────────────────────── */}
-          <Box {...cardStyle} bgGradient={heroBgGradient} px={10} py={14} textAlign="center">
-            <VStack spacing={6}>
-              <Badge
-                px={3} py={1} borderRadius="full"
-                bg={accentGreenSoft} color={accentGreen}
-                fontSize="11px" fontWeight="600"
-                letterSpacing="0.08em" textTransform="uppercase"
-                border="1px solid" borderColor={dividerColor}
-              >
-                Landfill Management Platform
-              </Badge>
-
-              <Heading
-                fontSize={{ base: "3xl", md: "4xl" }}
-                color={strongText} fontWeight="800"
-                letterSpacing="-0.03em" lineHeight="1.15" maxW="3xl"
-              >
-                Comprehensive Landfill{" "}
-                <Text as="span" color={accentGreen}>Management</Text>{" "}
-                & Reporting
-              </Heading>
-
-              <Text fontSize="lg" color={subtleText} maxW="xl" lineHeight="1.75">
-                Monitor, analyze, and report on landfill operations with real-time data insights,
-                automated compliance reporting, and predictive analytics.
-              </Text>
-
-              {/* <HStack spacing={3} pt={2}>
-                <Button
-                  leftIcon={<FiBarChart size={15} />}
-                  bg={accentGreen} color="white"
-                  borderRadius="10px" fontWeight="600" px={6}
-                  _hover={{ bg: btnHoverBg, transform: "translateY(-1px)", boxShadow: "0 4px 14px rgba(22,163,74,0.35)" }}
-                  _active={{ transform: "translateY(0)" }}
-                  transition="all 0.18s"
+          {/* ── Hero + Map ───────────────────────────────────────────────── */}
+          <Box {...cardStyle}>
+            <Box bgGradient={heroBgGradient} px={10} py={10} textAlign="center">
+              <VStack spacing={4}>
+                <Badge
+                  px={3} py={1} borderRadius="full"
+                  bg={accentGreenSoft} color={accentGreen}
+                  fontSize="11px" fontWeight="600"
+                  letterSpacing="0.08em" textTransform="uppercase"
+                  border="1px solid" borderColor={dividerColor}
                 >
-                  View Dashboard
-                </Button>
-                <Button
-                  leftIcon={<FiFileText size={15} />}
-                  variant="ghost" borderRadius="10px" fontWeight="600" px={6}
-                  color={subtleText} border="1px solid" borderColor={cardBorder}
-                  _hover={{ color: strongText, bg: hoverBg }}
-                  transition="all 0.15s"
+                  Landfill Management Platform
+                </Badge>
+
+                <Heading
+                  fontSize={{ base: "2xl", md: "3xl" }}
+                  color={strongText} fontWeight="800"
+                  letterSpacing="-0.03em" lineHeight="1.15" maxW="3xl"
                 >
-                  Generate Report
-                </Button>
-              </HStack> */}
-            </VStack>
+                  Comprehensive Landfill{" "}
+                  <Text as="span" color={accentGreen}>Management</Text>{" "}
+                  & Reporting
+                </Heading>
+              </VStack>
+            </Box>
           </Box>
+
+          
 
           {/* ── Stats ────────────────────────────────────────────────────── */}
           <SimpleGrid columns={{ base: 2, md: 4 }} spacing={4}>
@@ -374,6 +350,8 @@ export default function LandfillHomepage() {
             ))}
           </SimpleGrid>
 
+          <HomeMap />
+
           {/* ── News ─────────────────────────────────────────────────────── */}
           <Box {...cardStyle}>
             <Box px={6} py={4} borderBottom="1px solid" borderColor={dividerColor}>
@@ -387,14 +365,6 @@ export default function LandfillHomepage() {
                   </Box>
                   <Text fontWeight="600" fontSize="lg" color={strongText}>Latest News & Updates</Text>
                 </HStack>
-                <Button
-                  variant="ghost" size="sm"
-                  rightIcon={<FiArrowRight size={13} />}
-                  color={subtleText} fontWeight="500" fontSize="md" borderRadius="8px"
-                  _hover={{ color: strongText, bg: hoverBg }}
-                >
-                  View All
-                </Button>
               </HStack>
             </Box>
 
@@ -405,9 +375,9 @@ export default function LandfillHomepage() {
               {newsError && (
                 <Text color="red.400" fontSize="md" textAlign="center" py={8}>Failed to load news.</Text>
               )}
-              {news && news.length > 0 && (
+              {newsData?.content && newsData.content.length > 0 && (
                 <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={4}>
-                  {news.map((article) => (
+                  {newsData.content.map((article) => (
                     <Box
                       key={article.id}
                       bg={pageBg} border="1px solid" borderColor={cardBorder}
@@ -451,41 +421,32 @@ export default function LandfillHomepage() {
                   ))}
                 </SimpleGrid>
               )}
-            </Box>
-          </Box>
 
-          {/* ── Quick Actions ─────────────────────────────────────────────── */}
-          <Box {...cardStyle}>
-            <Box px={6} py={4} borderBottom="1px solid" borderColor={dividerColor}>
-              <HStack spacing={2}>
-                <Box
-                  w={7} h={7} borderRadius="lg" bg={accentGreenSoft}
-                  display="flex" alignItems="center" justifyContent="center"
+              {/* ── Pagination ───────────────────────────────────────────── */}
+              <HStack justify="center" pt={6} spacing={3}>
+                <Button
+                  size="sm" variant="ghost" isDisabled={page === 0}
+                  onClick={() => setPage((p) => p - 1)}
+                  color={subtleText} borderRadius="8px"
+                  _hover={{ color: strongText, bg: hoverBg }}
                 >
-                  <Icon as={FiBarChart} color={accentGreen} boxSize={3.5} />
-                </Box>
-                <Text fontWeight="600" fontSize="lg" color={strongText}>Quick Actions</Text>
+                  Previous
+                </Button>
+                <Text fontSize="sm" color={subtleText} fontWeight="500">
+                  Page {(newsData?.number ?? 0) + 1} of {newsData?.totalPages ?? 1}
+                </Text>
+                <Button
+                  size="sm" variant="ghost"
+                  isDisabled={page >= (newsData?.totalPages ?? 1) - 1}
+                  onClick={() => setPage((p) => p + 1)}
+                  color={subtleText} borderRadius="8px"
+                  _hover={{ color: strongText, bg: hoverBg }}
+                >
+                  Next
+                </Button>
               </HStack>
             </Box>
-            <Box p={6}>
-              <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={3}>
-                {quickActions.map(({ icon, label }) => (
-                  <Button
-                    key={label}
-                    leftIcon={<Icon as={icon} boxSize={4} />}
-                    variant="ghost" h={14} borderRadius="12px"
-                    border="1px solid" borderColor={cardBorder}
-                    color={subtleText} fontWeight="500" fontSize="md"
-                    _hover={{ color: accentGreen, borderColor: accentGreen, bg: accentGreenSoft, transform: "translateY(-1px)" }}
-                    transition="all 0.18s"
-                  >
-                    {label}
-                  </Button>
-                ))}
-              </SimpleGrid>
-            </Box>
           </Box>
-
         </VStack>
       </Container>
     </Box>
