@@ -37,6 +37,7 @@ import { useState } from "react";
 
 export const ReportList = () => {
   const [selectedStatus, setSelectedStatus] = useState("ALL");
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
 
   const {
     data: reports,
@@ -44,6 +45,14 @@ export const ReportList = () => {
     isLoading,
     mutate,
   } = useSWR<IReport[]>(`${swrKeys.reports}?status=${selectedStatus}`, fetcher);
+
+  const sortedReports = reports
+    ? [...reports].sort((a, b) => {
+        const dateA = new Date(a.createdAt ?? a.createdAt ?? 0).getTime();
+        const dateB = new Date(b.createdAt ?? b.createdAt ?? 0).getTime();
+        return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+      })
+    : [];
 
   const pageBg          = useColorModeValue("#F7F8FA", "#0F1117");
   const cardBg          = useColorModeValue("#FFFFFF", "#171B26");
@@ -197,7 +206,7 @@ export const ReportList = () => {
                 borderRadius="10px" px={4} py={2} textAlign="center"
               >
                 <Text fontSize="xl" fontWeight="700" color={accentGreen} lineHeight="1">
-                  {reports.length}
+                  {sortedReports.length}
                 </Text>
                 <Text fontSize="10px" color={subtleText} fontWeight="600" letterSpacing="0.06em" textTransform="uppercase">
                   Total
@@ -247,7 +256,7 @@ export const ReportList = () => {
                       Recent Reports
                     </Text>
                     <Text fontSize="xs" color={subtleText}>
-                      {reports.length} report{reports.length !== 1 ? "s" : ""} found
+                      {sortedReports.length} report{sortedReports.length !== 1 ? "s" : ""} found
                     </Text>
                   </VStack>
                 </HStack>
@@ -272,6 +281,23 @@ export const ReportList = () => {
                     <option value="REJECTED">Rejected</option>
                   </Select>
 
+                  <Select
+                    size="sm"
+                    width="160px"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value as "desc" | "asc")}
+                    bg={selectBg}
+                    border="1px solid" borderColor={cardBorder}
+                    borderRadius="8px"
+                    fontSize="sm" fontWeight="500"
+                    color={strongText}
+                    _hover={{ borderColor: accentGreen }}
+                    _focus={{ borderColor: accentGreen, boxShadow: focusShadow }}
+                  >
+                    <option value="desc">Newest First</option>
+                    <option value="asc">Oldest First</option>
+                  </Select>
+
                   <Button
                     size="sm"
                     variant="ghost"
@@ -290,7 +316,7 @@ export const ReportList = () => {
 
             <Box p={6}>
               <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={5}>
-                {reports.map((report) => (
+                {sortedReports.map((report) => (
                   <ReportItem key={report.id} report={report} />
                 ))}
               </SimpleGrid>
